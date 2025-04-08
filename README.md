@@ -13,5 +13,3 @@ The project demonstrates skills in:
 - Authentication and profile handling
 - Dynamic user interface components
 - Documentation and deployment
-
-> This project is part of the final assessment for the second-year front-end curriculum.
