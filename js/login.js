@@ -1,19 +1,19 @@
 /**
  * @file login.js
- * @description Handles login form submission, client-side validation, and redirects upon success.
+ * @description Handles login form submission and validation for Auction House.
+ * @module login
  */
 
 import { loginUser } from "./auth.js";
 
 /**
- * Initializes login form handling and validation
+ * Handles the login form submission and input validation.
  * @function handleLoginForm
  */
 function handleLoginForm() {
   const form = document.getElementById("login-form");
   const emailInput = document.getElementById("email");
   const passwordInput = document.getElementById("password");
-
   const emailError = document.getElementById("email-error");
   const passwordError = document.getElementById("password-error");
 
@@ -34,20 +34,14 @@ function handleLoginForm() {
       hasError = true;
     }
 
-    if (!password || password.length < 8) {
-      passwordError.textContent = "Password must be at least 8 characters";
-      passwordError.classList.remove("hidden");
-      hasError = true;
-    }
-
     if (hasError) return;
 
     try {
-      await loginUser(email, password);
-      window.location.href = "./html/feed.html";
+        await loginUser(email, password);
+        window.location.href = "./html/feed.html";
     } catch (error) {
-      emailError.textContent = "Invalid email or password";
-      emailError.classList.remove("hidden");
+        passwordError.textContent = "Login failed: " + error.message;
+        passwordError.classList.remove("hidden");
     }
   });
 }
