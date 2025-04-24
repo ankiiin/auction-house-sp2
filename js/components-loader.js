@@ -1,33 +1,54 @@
 /**
  * @file components-loader.js
- * @description Dynamically loads shared HTML components like navbar, footer, and popups into their container elements.
+ * @description Loads reusable components like navbar, footer, and search popup into the page.
  */
 
-/**
- * Loads an external HTML component into a specified container.
- * 
- * @param {string} containerId - The ID of the element to inject into.
- * @param {string} filePath - Path to the HTML file to be loaded.
- */
-async function loadComponent(containerId, filePath) {
-    const container = document.getElementById(containerId);
+export async function loadNavbar() {
+    const container = document.getElementById("navbar-container");
     if (!container) return;
   
     try {
-      const response = await fetch(filePath);
+      const response = await fetch("../components/navbar.html");
       const html = await response.text();
       container.innerHTML = html;
     } catch (error) {
-      console.error(`❌ Failed to load ${filePath}:`, error);
+      console.error("Failed to load navbar:", error);
+    }
+  }
+  
+  export async function loadFooter() {
+    const container = document.getElementById("footer-container");
+    if (!container) return;
+  
+    try {
+      const response = await fetch("../components/footer.html");
+      const html = await response.text();
+      container.innerHTML = html;
+    } catch (error) {
+      console.error("Failed to load footer:", error);
+    }
+  }
+  
+  export async function loadSearchPopup() {
+    try {
+      const response = await fetch("../components/search-popup.html");
+      const html = await response.text();
+      const wrapper = document.createElement("div");
+      wrapper.innerHTML = html;
+      document.body.appendChild(wrapper);
+    } catch (error) {
+      console.error("Failed to load search popup:", error);
     }
   }
   
   /**
-   * Loads all UI components globally used in the project.
+   * Loads all shared layout components (navbar + footer + popup)
+   * @async
+   * @function loadComponents
+   * @returns {Promise<void>}
    */
-  export function loadComponents() {
-    loadComponent("navbar-container", "../components/navbar.html");
-    loadComponent("footer-container", "../components/footer.html");
-    loadComponent("hamburgermenu-container", "../components/hamburgermenu.html");
-    loadComponent("search-popup-container", "../components/search-popup.html");
+  export async function loadComponents() {
+    await loadNavbar();
+    await loadFooter();
+    await loadSearchPopup();
   }
