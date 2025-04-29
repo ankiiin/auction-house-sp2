@@ -1,16 +1,12 @@
 import { loadComponents } from "./components-loader.js";
-import { displayUserCredits, logoutUser } from "./utils.js";
+import { displayUserCredits } from "./utils.js";
 import { initSearchPopup } from "./search.js";
 
+/**
+ * Initializes the app after the DOM is fully loaded.
+ */
 document.addEventListener("DOMContentLoaded", async () => {
-  await loadComponents(); 
-
-  displayUserCredits(); 
-
-  initSearchPopup(); 
-
-  const logoutButton = document.getElementById("logout-button");
-  if (logoutButton) {
-    logoutButton.addEventListener("click", logoutUser);
-  }
+  await loadComponents();       
+  displayUserCredits();         
+  initSearchPopup();            
 });

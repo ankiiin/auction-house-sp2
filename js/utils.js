@@ -24,7 +24,6 @@ export async function displayUserCredits() {
       );
   
       const result = await response.json();
-  
       const credits = result.data?.credits;
   
       const creditsDisplay = document.getElementById("credits-display");
@@ -90,14 +89,21 @@ export async function displayUserCredits() {
   }
   
   /**
-   * Logs out the current user by clearing localStorage and redirecting to login.
+   * Logs out the current user by clearing auth data and redirecting to homepage.
    *
    * @function logoutUser
-   * @param {Event} event - The click event
+   * @param {Event} event - The click event (optional)
    */
   export function logoutUser(event) {
+  
     if (event) event.preventDefault();
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("user");
-    window.location.href = "../index.html";
+  
+    try {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("user");
+    } catch (err) {
+      console.error("⚠️ Error clearing localStorage", err);
+    }
+  
+    window.location.href = "../index.html"; 
   }
