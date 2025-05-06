@@ -13,26 +13,33 @@ function updateHighestBid(listingId, bidAmount) {
 }
 
 /**
- * Fetches all active listings and updates the UI.
+ * Fetches active listings not owned by the user, sorts them by creation date, and renders them.
+ * @async
+ * @function loadAndRenderListings
  */
 async function loadAndRenderListings() {
   const listings = await loadListings();
+  const now = new Date();
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const activeListings = listings
+    .filter(listing => new Date(listing.endsAt) > now && listing.seller?.name !== user?.name)
+    .sort((a, b) => new Date(b.created) - new Date(a.created));
 
   const feedContainer = document.getElementById("listing-feed");
   feedContainer.innerHTML = "";
 
-  for (const listing of listings) {
+  for (const listing of activeListings) {
     const listingCard = document.createElement("div");
     listingCard.className = "bg-white p-4 rounded-lg shadow-md hover:shadow-lg";
 
-    const imageUrl = listing.media && listing.media.length > 0 ? listing.media[0].url : null;
+    const imageUrl = listing.media?.[0]?.url;
     const isValidImage = imageUrl && (imageUrl.startsWith("http") || imageUrl.startsWith("https"));
     const finalImageUrl = isValidImage ? imageUrl : "https://picsum.photos/400/300?text=No+Image";
 
     const endDate = new Date(listing.endsAt);
     const timeLeft = formatTimeLeft(endDate);
-
-    let highestBid = await getHighestBid(listing.id);
+    const highestBid = await getHighestBid(listing.id);
 
     listingCard.innerHTML = `
       <div class="w-full h-48 rounded-lg mb-4">
@@ -46,7 +53,7 @@ async function loadAndRenderListings() {
         <a href="listing-details.html?id=${listing.id}" class="text-indigo-500 hover:no-underline py-2 px-4 rounded-md border-2 border-indigo-500">VIEW LISTING</a>
       </div>
     `;
-    
+
     feedContainer.appendChild(listingCard);
 
     const bidButton = document.getElementById(`bid-btn-${listing.id}`);
@@ -59,26 +66,20 @@ async function loadAndRenderListings() {
 /**
  * Formats the remaining time between now and the auction end time.
  * @param {Date} endDate - The end date of the auction.
- * @returns {string} The formatted time left (e.g., "3 hours left").
+ * @returns {string} The formatted time left.
  */
 function formatTimeLeft(endDate) {
   const now = new Date();
   const timeDiff = endDate - now;
 
-  if (timeDiff <= 0) {
-    return "Auction ended";
-  }
+  if (timeDiff <= 0) return "Auction ended";
 
   const hoursLeft = Math.floor(timeDiff / (1000 * 60 * 60));
   const minutesLeft = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
 
-  if (hoursLeft > 0) {
-    return `${hoursLeft} hours left`;
-  } else if (minutesLeft > 0) {
-    return `${minutesLeft} minutes left`;
-  } else {
-    return "Less than a minute left";
-  }
+  if (hoursLeft > 0) return `${hoursLeft} hours left`;
+  if (minutesLeft > 0) return `${minutesLeft} minutes left`;
+  return "Less than a minute left";
 }
 
 /**
@@ -96,7 +97,6 @@ function openBidModal(listingId, currentBid) {
   const currentBidText = document.getElementById("current-bid-value");
 
   currentBidText.textContent = currentBid;
-
   bidModal.classList.remove("hidden");
 
   closeModalButton.addEventListener("click", () => {
@@ -109,7 +109,7 @@ function openBidModal(listingId, currentBid) {
     }
   });
 
-  placeBidButton.addEventListener("click", async () => {
+  placeBidButton.onclick = async () => {
     const bidAmount = parseInt(bidAmountInput.value, 10);
 
     if (bidAmount <= currentBid) {
@@ -117,10 +117,10 @@ function openBidModal(listingId, currentBid) {
     } else {
       bidErrorMessage.classList.add("hidden");
       await placeBid(listingId, bidAmount);
-      updateUserCredits(-bidAmount); 
+      updateUserCredits(-bidAmount);
       bidModal.classList.add("hidden");
     }
-  });
+  };
 }
 
 /**
@@ -155,13 +155,11 @@ async function placeBid(listingId, bidAmount) {
     const result = await response.json();
 
     if (response.ok) {
-      alert("Bid placed successfully!");
-      updateHighestBid(listingId, bidAmount); 
+      updateHighestBid(listingId, bidAmount);
     } else {
       alert("Failed to place bid: " + result.errors[0].message);
     }
-  } catch (error) {
-    console.error("Error placing bid:", error);
+  } catch {
     alert("An error occurred while placing the bid.");
   }
 }

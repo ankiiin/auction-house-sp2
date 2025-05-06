@@ -72,7 +72,6 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const result = await createListing(listingData);
       if (result && result.data) {
-        alert("Listing created successfully!");
         window.location.href = "dashboard.html";
       }
     } catch {

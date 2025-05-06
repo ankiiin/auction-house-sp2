@@ -21,14 +21,13 @@ const headers = {
  * Registers a new user using the Noroff Auth API.
  * @async
  * @function registerUser
- * @param {Object} user - User information
- * @param {string} user.name - The user's full name
- * @param {string} user.email - The user's email (must end with @stud.noroff.no)
- * @param {string} user.password - The user's password (min. 8 characters)
+ * @param {string} name - The user's name
+ * @param {string} email - The user's email (must end with @stud.noroff.no)
+ * @param {string} password - The user's password (min. 8 characters)
  * @returns {Promise<Object>} The registered user data or error object
  * @throws {Error} If registration fails or the API returns an error
  */
-export async function registerUser({ name, email, password }) {
+export async function registerUser(name, email, password) {
   try {
     const response = await fetch(REGISTER_URL, {
       method: "POST",
@@ -75,12 +74,13 @@ export async function loginUser(email, password) {
     localStorage.setItem("user", JSON.stringify(data.data));
 
     const token = localStorage.getItem("accessToken");
+
     if (token) {
-      const creditsResponse = await fetch('https://v2.api.noroff.dev/auction/user/credits', {
+      const creditsResponse = await fetch("https://v2.api.noroff.dev/auction/user/credits", {
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'X-Noroff-API-Key': "1d6d6a25-2013-4a8e-9a20-f8e10b64f3a8",
-        }
+          "Authorization": `Bearer ${token}`,
+          "X-Noroff-API-Key": "1d6d6a25-2013-4a8e-9a20-f8e10b64f3a8",
+        },
       });
 
       const creditsData = await creditsResponse.json();
@@ -89,7 +89,7 @@ export async function loginUser(email, password) {
       }
     }
 
-    return data; 
+    return data;
   } catch (error) {
     throw error;
   }

@@ -98,7 +98,7 @@ export async function sendPutRequest(url, data, token) {
     };
   
     try {
-      const response = await fetch("https://v2.api.noroff.dev/auction/listings", options);
+        const response = await fetch("https://v2.api.noroff.dev/auction/listings?_seller=true", options);
       const data = await response.json();
       return data.data || [];
     } catch (error) {
@@ -200,7 +200,6 @@ export async function sendPutRequest(url, data, token) {
       if (!response.ok) {
         alert("Failed to update profile: " + result.errors[0].message);
       } else {
-        alert("Profile updated successfully.");
       }
     } catch (error) {
       console.error("Error updating profile:", error);

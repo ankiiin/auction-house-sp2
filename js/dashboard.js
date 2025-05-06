@@ -116,10 +116,11 @@ function renderListings(listings = []) {
       <img src="${imageUrl}" alt="${imageAlt}" class="w-full h-40 object-cover rounded mb-2">
       <h4 class="text-md font-semibold text-gray-800 mb-1">${listing.title}</h4>
       <p class="text-sm text-gray-600 mb-2">${listing.description || "No description"}</p>
-      <div class="flex justify-between items-center mt-4">
-        <a href="listing-details.html?id=${listing.id}" class="text-indigo-500 text-sm hover:underline">View Listing</a>
-        <button class="text-red-500 text-sm hover:underline" data-id="${listing.id}">Delete</button>
-      </div>
+      <div class="flex justify-between items-center mt-4 space-x-2">
+  <a href="listing-details.html?id=${listing.id}" class="text-indigo-500 text-sm hover:underline">View Listing</a>
+  <a href="edit-listing.html?id=${listing.id}" class="text-yellow-500 text-sm hover:underline">Edit</a>
+  <button class="text-red-500 text-sm hover:underline" data-id="${listing.id}">Delete</button>
+</div>
     `;
 
     listingsContainer.appendChild(card);
@@ -158,7 +159,6 @@ async function deleteListing(id) {
       throw new Error("Failed to delete listing");
     }
 
-    alert("Listing deleted");
     initDashboard();
   } catch (error) {
     console.error("Error deleting listing:", error);
