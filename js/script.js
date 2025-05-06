@@ -29,57 +29,102 @@ export async function sendPutRequest(url, data, token) {
   }
   
   /**
-   * Renders the user's profile data to the dashboard.
-   * @param {Object} data - The user profile data.
+   * Updates the user's credits by subtracting the bid amount.
+   * @param {number} amount - The amount of credits to subtract.
    */
-  export function renderProfile(data) {
-    const nameEl = document.getElementById("profile-name");
-    const avatarEl = document.getElementById("profile-avatar");
-    const bannerEl = document.getElementById("profile-banner");
-    const bioEl = document.getElementById("profile-bio");
+  export function updateUserCredits(amount) {
+    let currentCredits = parseInt(localStorage.getItem("userCredits"), 10) || 0;
   
-    if (nameEl) nameEl.textContent = data.name;
-    if (bioEl) bioEl.textContent = data.bio || "No bio yet";
-  
-    if (avatarEl && data.avatar && data.avatar.trim() !== "") {
-      avatarEl.src = data.avatar;
+    if (currentCredits < amount) {
+      alert("You do not have enough credits to place this bid.");
+      return;
     }
   
-    if (bannerEl && data.banner && data.banner.trim() !== "") {
-      bannerEl.style.backgroundImage = `url('${data.banner}')`;
+    currentCredits -= amount;
+    localStorage.setItem("userCredits", currentCredits);
+    displayUserCredits(currentCredits); // You can use this function to update the UI if needed.
+  }
+  
+  /**
+   * Fetches data from the API and handles errors.
+   * @async
+   * @function fetchFromAPI
+   * @param {string} url - The API URL.
+   * @param {Object} options - The fetch options.
+   * @returns {Promise<Object>} The response data or an error object.
+   */
+  export async function fetchFromAPI(url, options) {
+    try {
+      const response = await fetch(url, options);
+      if (!response.ok) {
+        throw new Error(`API request failed with status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      return { error: error.message };
     }
   }
   
   /**
-   * Renders the user's listings or shows a fallback message.
-   * @param {Array} listings - Array of listings.
+   * Fetches the highest bid for a listing.
+   * @async
+   * @function getHighestBid
+   * @param {string} listingId - The ID of the listing.
+   * @returns {Promise<number>} - The highest bid amount or 0 if no bids.
    */
-  export function renderListings(listings = []) {
-    const listingsContainer = document.getElementById("my-listings");
-    const emptyState = document.getElementById("no-listings");
+  export async function getHighestBid(listingId) {
+    const token = localStorage.getItem("accessToken");
+    const options = {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "X-Noroff-API-Key": "1d6d6a25-2013-4a8e-9a20-f8e10b64f3a8",
+      },
+    };
   
-    if (!listingsContainer || !emptyState) return;
-  
-    listingsContainer.innerHTML = "";
-  
-    if (listings.length === 0) {
-      emptyState.classList.remove("hidden");
-      return;
+    const data = await fetchFromAPI(`https://v2.api.noroff.dev/auction/listings/${listingId}?_bids=true&_seller=true`, options);
+    if (data && data.data && data.data.bids && data.data.bids.length > 0) {
+      const highestBid = data.data.bids.sort((a, b) => b.amount - a.amount)[0].amount;
+      return highestBid;
     }
+    return 0;
+  }
   
-    emptyState.classList.add("hidden");
+  /**
+   * Fetches all active listings from the API.
+   * @async
+   * @function loadListings
+   * @returns {Promise<Object>} The fetched listings data.
+   */
+  export async function loadListings() {
+    const token = localStorage.getItem("accessToken");
   
-    listings.forEach((listing) => {
-      const card = document.createElement("div");
-      card.className = "bg-white p-4 rounded shadow-sm border border-gray-200";
+    const options = {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "X-Noroff-API-Key": "1d6d6a25-2013-4a8e-9a20-f8e10b64f3a8",
+      },
+    };
   
-      card.innerHTML = `
-        <img src="${listing.media?.[0] || ""}" alt="${listing.title}" class="w-full h-40 object-cover rounded mb-2">
-        <h4 class="text-md font-semibold text-gray-800 mb-1">${listing.title}</h4>
-        <p class="text-sm text-gray-600 mb-2">${listing.description || "No description"}</p>
-        <button class="text-indigo-500 text-sm hover:underline" data-id="${listing.id}">View Listing</button>
-      `;
+    const data = await fetchFromAPI("https://v2.api.noroff.dev/auction/listings", options);
+    return data.data || [];
+  }
   
-      listingsContainer.appendChild(card);
-    });
+  /**
+   * Fetches the user's credits from the API.
+   * @async
+   * @function getUserCredits
+   * @returns {Promise<number>} The user's current credits.
+   */
+  export async function getUserCredits() {
+    const token = localStorage.getItem("accessToken");
+  
+    const options = {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "X-Noroff-API-Key": "1d6d6a25-2013-4a8e-9a20-f8e10b64f3a8",
+      },
+    };
+  
+    const data = await fetchFromAPI("https://v2.api.noroff.dev/auction/user/credits", options);
+    return data.credits || 0;
   }
