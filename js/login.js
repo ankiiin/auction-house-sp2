@@ -37,11 +37,18 @@ function handleLoginForm() {
     if (hasError) return;
 
     try {
-        await loginUser(email, password);
-        window.location.href = "./html/feed.html";
+      const data = await loginUser(email, password);  
+      const token = localStorage.getItem("accessToken");
+
+      if (token) {
+        const userCredits = data.credits || 0; 
+        window.location.href = "./html/feed.html"; 
+      } else {
+        alert("Login failed: No token found.");
+      }
     } catch (error) {
-        passwordError.textContent = "Login failed: " + error.message;
-        passwordError.classList.remove("hidden");
+      passwordError.textContent = "Login failed: " + error.message;
+      passwordError.classList.remove("hidden");
     }
   });
 }
