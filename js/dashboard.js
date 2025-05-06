@@ -86,7 +86,9 @@ function renderProfile(data) {
  * @param {string} listing.title - The title of the listing.
  * @param {string} listing.description - The description of the listing.
  * @param {Array} listing.media - The media associated with the listing.
- * @param {string} listing.media[0] - The URL for the listing's main image.
+ * @param {Object} listing.media[0] - The media object containing URL and alt text.
+ * @param {string} listing.media[0].url - The URL for the listing's main image.
+ * @param {string} listing.media[0].alt - The alt text for the listing image.
  */
 function renderListings(listings = []) {
   const listingsContainer = document.getElementById("my-listings");
@@ -107,13 +109,59 @@ function renderListings(listings = []) {
     const card = document.createElement("div");
     card.className = "bg-white p-4 rounded shadow-sm border border-gray-200";
 
+    const imageUrl = listing.media?.[0]?.url || "https://via.placeholder.com/400x300";
+    const imageAlt = listing.media?.[0]?.alt || listing.title;
+
     card.innerHTML = `
-      <img src="${listing.media?.[0] || ""}" alt="${listing.title}" class="w-full h-40 object-cover rounded mb-2">
+      <img src="${imageUrl}" alt="${imageAlt}" class="w-full h-40 object-cover rounded mb-2">
       <h4 class="text-md font-semibold text-gray-800 mb-1">${listing.title}</h4>
       <p class="text-sm text-gray-600 mb-2">${listing.description || "No description"}</p>
-      <button class="text-indigo-500 text-sm hover:underline" data-id="${listing.id}">View Listing</button>
+      <div class="flex justify-between items-center mt-4">
+        <a href="listing-details.html?id=${listing.id}" class="text-indigo-500 text-sm hover:underline">View Listing</a>
+        <button class="text-red-500 text-sm hover:underline" data-id="${listing.id}">Delete</button>
+      </div>
     `;
 
     listingsContainer.appendChild(card);
+
+    const deleteBtn = card.querySelector("button[data-id]");
+    if (deleteBtn) {
+      deleteBtn.addEventListener("click", () => {
+        const listingId = deleteBtn.getAttribute("data-id");
+        deleteListing(listingId);
+      });
+    }
   });
+}
+
+/**
+ * Deletes a listing by ID and refreshes the dashboard.
+ * 
+ * @param {string} id - The ID of the listing to delete.
+ * @async
+ * @function deleteListing
+ */
+async function deleteListing(id) {
+  const confirmed = confirm("Are you sure you want to delete this listing?");
+  if (!confirmed) return;
+
+  try {
+    const response = await fetch(`https://v2.api.noroff.dev/auction/listings/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        "X-Noroff-API-Key": API_KEY,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to delete listing");
+    }
+
+    alert("Listing deleted");
+    initDashboard();
+  } catch (error) {
+    console.error("Error deleting listing:", error);
+    alert("Could not delete the listing. Try again.");
+  }
 }

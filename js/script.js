@@ -29,13 +29,13 @@ export async function sendPutRequest(url, data, token) {
   }
   
   /**
- * Updates the user's credits in the backend and updates the local storage and UI.
- * @param {number} amount - The amount of credits to add or subtract.
- */
-export async function updateUserCredits(amount) {
+   * Updates the user's credits in the backend and updates the local storage and UI.
+   * @param {number} amount - The amount of credits to add or subtract.
+   */
+  export async function updateUserCredits(amount) {
     const currentCredits = parseInt(localStorage.getItem("userCredits"), 10) || 0;
     const newCredits = currentCredits - amount;
-    
+  
     if (newCredits < 0) {
       alert("Insufficient credits for placing this bid.");
       return;
@@ -205,5 +205,42 @@ export async function updateUserCredits(amount) {
     } catch (error) {
       console.error("Error updating profile:", error);
       alert("An error occurred while updating the profile.");
+    }
+  }
+  
+  /**
+   * Creates a new listing.
+   * @param {Object} listingData - The listing details.
+   * @returns {Promise<Object>} - The response from the API.
+   */
+  export async function createListing(listingData) {
+    const token = localStorage.getItem("accessToken");
+  
+    if (!token) {
+      alert("You must be logged in to create a listing.");
+      return;
+    }
+  
+    try {
+      const response = await fetch("https://v2.api.noroff.dev/auction/listings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+          "X-Noroff-API-Key": "e6f16bc6-a633-40af-ad6b-db10b065d4e2",
+        },
+        body: JSON.stringify(listingData),
+      });
+  
+      const result = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(result.errors?.[0]?.message || "Failed to create listing");
+      }
+  
+      return result;
+    } catch (error) {
+      console.error("Error creating listing:", error);
+      alert(error.message);
     }
   }
