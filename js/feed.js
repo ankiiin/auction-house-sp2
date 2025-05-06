@@ -117,10 +117,53 @@ function openBidModal(listingId, currentBid) {
     } else {
       bidErrorMessage.classList.add("hidden");
       await placeBid(listingId, bidAmount);
-      updateUserCredits(bidAmount);
+      updateUserCredits(-bidAmount); 
       bidModal.classList.add("hidden");
     }
   });
+}
+
+/**
+ * Places a bid for a listing.
+ * @async
+ * @function placeBid
+ * @param {string} listingId - The ID of the listing.
+ * @param {number} bidAmount - The amount to bid.
+ */
+async function placeBid(listingId, bidAmount) {
+  const token = localStorage.getItem("accessToken");
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  if (!token || !user) {
+    alert("You need to be logged in to place a bid.");
+    return;
+  }
+
+  const data = { amount: bidAmount };
+
+  try {
+    const response = await fetch(`https://v2.api.noroff.dev/auction/listings/${listingId}/bids`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+        "X-Noroff-API-Key": "e6f16bc6-a633-40af-ad6b-db10b065d4e2",
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      alert("Bid placed successfully!");
+      updateHighestBid(listingId, bidAmount); 
+    } else {
+      alert("Failed to place bid: " + result.errors[0].message);
+    }
+  } catch (error) {
+    console.error("Error placing bid:", error);
+    alert("An error occurred while placing the bid.");
+  }
 }
 
 loadAndRenderListings();

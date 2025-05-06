@@ -29,39 +29,81 @@ export async function sendPutRequest(url, data, token) {
   }
   
   /**
-   * Updates the user's credits by subtracting the bid amount.
-   * @param {number} amount - The amount of credits to subtract.
-   */
-  export function updateUserCredits(amount) {
-    let currentCredits = parseInt(localStorage.getItem("userCredits"), 10) || 0;
-  
-    if (currentCredits < amount) {
-      alert("You do not have enough credits to place this bid.");
+ * Updates the user's credits in the backend and updates the local storage and UI.
+ * @param {number} amount - The amount of credits to add or subtract.
+ */
+export async function updateUserCredits(amount) {
+    const currentCredits = parseInt(localStorage.getItem("userCredits"), 10) || 0;
+    const newCredits = currentCredits - amount;
+    
+    if (newCredits < 0) {
+      alert("Insufficient credits for placing this bid.");
       return;
     }
   
-    currentCredits -= amount;
-    localStorage.setItem("userCredits", currentCredits);
-    displayUserCredits(currentCredits); // You can use this function to update the UI if needed.
+    localStorage.setItem("userCredits", newCredits);
+    const creditsDisplay = document.getElementById("credits-display");
+    if (creditsDisplay) {
+      creditsDisplay.textContent = `Credits: ${newCredits}`;
+    }
+    return newCredits;
   }
   
   /**
-   * Fetches data from the API and handles errors.
+   * Fetches the user's credits from the API.
    * @async
-   * @function fetchFromAPI
-   * @param {string} url - The API URL.
-   * @param {Object} options - The fetch options.
-   * @returns {Promise<Object>} The response data or an error object.
+   * @function getUserCredits
+   * @returns {Promise<number>} The user's current credits.
    */
-  export async function fetchFromAPI(url, options) {
+  export async function getUserCredits() {
+    const token = localStorage.getItem("accessToken");
+  
+    if (!token) {
+      alert("You need to be logged in to fetch credits.");
+      return;
+    }
+  
+    const user = JSON.parse(localStorage.getItem("user"));
+    const options = {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "X-Noroff-API-Key": "e6f16bc6-a633-40af-ad6b-db10b065d4e2",
+      },
+    };
+  
     try {
-      const response = await fetch(url, options);
-      if (!response.ok) {
-        throw new Error(`API request failed with status: ${response.status}`);
-      }
-      return await response.json();
+      const response = await fetch(`https://v2.api.noroff.dev/auction/profiles/${user.name}/credits`, options);
+      const data = await response.json();
+      return data.data.credits || 0;
     } catch (error) {
-      return { error: error.message };
+      console.error("Error fetching user credits:", error);
+      alert("Failed to fetch credits.");
+    }
+  }
+  
+  /**
+   * Fetches all active listings from the API.
+   * @async
+   * @function loadListings
+   * @returns {Promise<Object>} The fetched listings data.
+   */
+  export async function loadListings() {
+    const token = localStorage.getItem("accessToken");
+  
+    const options = {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "X-Noroff-API-Key": "1d6d6a25-2013-4a8e-9a20-f8e10b64f3a8",
+      },
+    };
+  
+    try {
+      const response = await fetch("https://v2.api.noroff.dev/auction/listings", options);
+      const data = await response.json();
+      return data.data || [];
+    } catch (error) {
+      console.error("Error fetching listings:", error);
+      return [];
     }
   }
   
@@ -90,41 +132,78 @@ export async function sendPutRequest(url, data, token) {
   }
   
   /**
-   * Fetches all active listings from the API.
+   * Fetches data from the API and handles errors.
    * @async
-   * @function loadListings
-   * @returns {Promise<Object>} The fetched listings data.
+   * @function fetchFromAPI
+   * @param {string} url - The API URL.
+   * @param {Object} options - The fetch options.
+   * @returns {Promise<Object>} The response data or an error object.
    */
-  export async function loadListings() {
-    const token = localStorage.getItem("accessToken");
-  
-    const options = {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "X-Noroff-API-Key": "1d6d6a25-2013-4a8e-9a20-f8e10b64f3a8",
-      },
-    };
-  
-    const data = await fetchFromAPI("https://v2.api.noroff.dev/auction/listings", options);
-    return data.data || [];
+  export async function fetchFromAPI(url, options) {
+    try {
+      const response = await fetch(url, options);
+      if (!response.ok) {
+        throw new Error(`API request failed with status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      return { error: error.message };
+    }
   }
   
   /**
-   * Fetches the user's credits from the API.
+   * Updates the user's profile information.
    * @async
-   * @function getUserCredits
-   * @returns {Promise<number>} The user's current credits.
+   * @function updateProfile
+   * @param {Event} event - The event triggered by the form submission.
    */
-  export async function getUserCredits() {
+  export async function updateProfile(event) {
+    event.preventDefault();
+  
+    const avatarUrl = document.getElementById("avatar-url").value;
+    const bannerUrl = document.getElementById("banner-url").value;
+    const bio = document.getElementById("bio").value;
+  
+    const user = JSON.parse(localStorage.getItem("user"));
     const token = localStorage.getItem("accessToken");
   
-    const options = {
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "X-Noroff-API-Key": "1d6d6a25-2013-4a8e-9a20-f8e10b64f3a8",
+    if (!avatarUrl || !bannerUrl) {
+      alert("Please enter valid URLs for avatar and banner.");
+      return;
+    }
+  
+    const data = {
+      avatar: {
+        url: avatarUrl,
+        alt: ""
       },
+      banner: {
+        url: bannerUrl,
+        alt: ""
+      },
+      bio: bio
     };
   
-    const data = await fetchFromAPI("https://v2.api.noroff.dev/auction/user/credits", options);
-    return data.credits || 0;
+    try {
+      const response = await fetch(`https://v2.api.noroff.dev/auction/profiles/${user.name}`, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "X-Noroff-API-Key": "e6f16bc6-a633-40af-ad6b-db10b065d4e2",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      });
+  
+      const result = await response.json();
+  
+      if (!response.ok) {
+        alert("Failed to update profile: " + result.errors[0].message);
+      } else {
+        alert("Profile updated successfully.");
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("An error occurred while updating the profile.");
+    }
   }
