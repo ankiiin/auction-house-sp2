@@ -1,6 +1,6 @@
 /**
  * @file listing-details.js
- * @description Displays detailed information about a specific listing including image, description, seller profile, and bidding functionality.
+ * @description Displays detailed information about a specific listing including image, description, seller name, and bidding functionality.
  */
 
 const API_URL = "https://v2.api.noroff.dev";
@@ -29,14 +29,13 @@ async function fetchListingById(id) {
 }
 
 /**
- * Renders the listing details and seller profile in the UI.
+ * Renders the listing details and bidding UI.
  * @async
  * @function renderListingDetails
  */
 async function renderListingDetails() {
   const params = new URLSearchParams(window.location.search);
   const listingId = params.get("id");
-
   if (!listingId) return;
 
   const listing = await fetchListingById(listingId);
@@ -45,7 +44,6 @@ async function renderListingDetails() {
   const imageElement = document.getElementById("listing-image");
   const titleElement = document.getElementById("listing-title");
   const descriptionElement = document.getElementById("listing-description");
-  const sellerAvatar = document.getElementById("seller-avatar");
   const sellerName = document.getElementById("seller-name");
   const timeLeft = document.getElementById("time-left");
   const currentBid = document.getElementById("current-bid");
@@ -56,30 +54,21 @@ async function renderListingDetails() {
 
   imageElement.src = listing.media?.[0]?.url || "";
   imageElement.alt = listing.title;
-
   titleElement.textContent = listing.title;
-  descriptionElement.textContent = listing.description;
-
-  if (listing.seller?.avatar?.url) {
-    sellerAvatar.src = listing.seller.avatar.url;
-    sellerAvatar.alt = `${listing.seller.name}'s avatar`;
-  } else {
-    sellerAvatar.src = "";
-    sellerAvatar.alt = "";
-  }
-
-  sellerName.textContent = listing.seller.name;
+  descriptionElement.textContent = listing.description || "No description provided.";
+  sellerName.textContent = listing.seller?.name || "Unknown Seller";
 
   const endDate = new Date(listing.endsAt);
   const now = new Date();
   const timeDiff = endDate - now;
   const hoursLeft = Math.floor(timeDiff / (1000 * 60 * 60));
   const minutesLeft = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-  timeLeft.textContent = hoursLeft > 0
-    ? `Time left: ${hoursLeft} hours`
-    : minutesLeft > 0
-    ? `Time left: ${minutesLeft} minutes`
-    : "Auction ended";
+  timeLeft.textContent =
+    timeDiff <= 0
+      ? "Auction ended"
+      : hoursLeft > 0
+      ? `Time left: ${hoursLeft} hours`
+      : `Time left: ${minutesLeft} minutes`;
 
   const sortedBids = listing.bids.sort((a, b) => new Date(b.created) - new Date(a.created));
   const highestBid = sortedBids[0]?.amount || 0;
@@ -89,10 +78,11 @@ async function renderListingDetails() {
   if (sortedBids.length === 0) {
     bidHistory.innerHTML = "<p class='text-sm text-gray-500'>No bids yet.</p>";
   } else {
-    sortedBids.forEach(bid => {
+    sortedBids.forEach((bid) => {
       const li = document.createElement("li");
       const date = new Date(bid.created).toLocaleString();
-      li.textContent = `@${bid.bidderName} – ${bid.amount} credits – ${date}`;
+      const bidderName = bid.bidder?.name || "Unknown";
+      li.textContent = `@${bidderName} – ${bid.amount} credits – ${date}`;
       bidHistory.appendChild(li);
     });
   }
