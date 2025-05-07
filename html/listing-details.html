@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Listing Details | Auction House</title>
+    <link rel="stylesheet" href="./css/styles.css"/>
+    <script type="module" src="../js/init.js"></script>
+    <script type="module" src="../js/listing-details.js"></script>
+  </head>
+  <body class="bg-gray-100 min-h-screen flex flex-col">
+    <div id="navbar-container"></div>
+    <main class="flex-grow max-w-6xl mx-auto py-10 px-4 md:px-0">
+        <a href="feed.html" class="text-indigo-500 hover:underline">&larr;</a>
+      <div class="flex flex-col md:flex-row gap-10">
+        <div class="flex-1">
+          <img id="listing-image" alt="Listing Image" class="rounded-xl w-full object-cover max-h-[400px]" />
+          <div class="flex justify-center gap-4 mt-4">
+            <button id="prev-image" class="text-xl">←</button>
+            <button id="next-image" class="text-xl">→</button>
+          </div>
+        </div>
+        <div class="flex-1">
+          <h1 id="listing-title" class="text-2xl font-bold text-gray-900 mb-2"></h1>
+          <div class="flex items-center gap-2 mb-2">
+            <img id="seller-avatar" alt="Seller Avatar"
+              class="w-[50px] h-[50px] rounded-full object-cover border border-gray-300 shadow-sm" />
+            <span id="seller-name" class="text-gray-700 text-sm font-medium"></span>
+          </div>
+          <p id="time-left" class="text-indigo-600 text-sm mb-4"></p>
+          <p id="listing-description" class="text-gray-700 text-sm mb-6 leading-relaxed"></p>
+          <div class="border-t border-gray-200 pt-4">
+            <p class="font-semibold mb-2">Current bid: <span id="current-bid">0</span></p>
+            <input type="number" id="bid-amount" placeholder="Enter your bid"
+              class="w-full border border-gray-300 rounded px-4 py-2 mb-2" />
+            <button id="place-bid-btn"
+              class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 w-full">PLACE BID</button>
+            <p id="bid-error" class="text-red-500 text-sm mt-1 hidden">Bid must be higher than current bid</p>
+          </div>
+          <div id="bid-history" class="mt-6 text-sm text-gray-600 space-y-1"></div>
+        </div>
+      </div>
+    </main>
+    <div id="footer-container"></div>
+  </body>
+</html>
