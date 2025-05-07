@@ -4,7 +4,6 @@ node_modules/
 # Tailwind output
 dist/
 build/
-css/styles.css
 
 # macOS
 .DS_Store
