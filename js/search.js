@@ -1,99 +1,137 @@
 /**
  * @file search.js
- * @description Manages the search popup functionality, including opening, closing, and fetching results from the API.
+ * @description Manages the search functionality for both desktop and mobile.
  */
 
-/**
- * Initializes the search popup functionality.
- * Opens the popup when the search button is clicked, closes it when clicking outside or on the close button,
- * and fetches listings based on the search query.
- */
 export function initSearchPopup() {
-    const toggleBtn = document.getElementById("search-toggle");
-    const popup = document.getElementById("search-popup");
-    const closeBtn = document.getElementById("close-search-popup");
-    const searchInput = document.getElementById("search-input");
-    const searchResults = document.getElementById("search-results");
-  
-    if (!toggleBtn || !popup || !closeBtn || !searchInput || !searchResults) return;
-  
-    toggleBtn.addEventListener("click", () => {
-      popup.classList.remove("hidden");
-      popup.classList.add("flex");
+  const desktopToggle = document.getElementById("search-toggle");
+  const desktopPopup = document.getElementById("search-popup");
+  const desktopClose = document.getElementById("close-search-popup");
+  const desktopInput = document.getElementById("search-input");
+  const desktopResults = document.getElementById("search-results");
+
+  const mobileInput = document.getElementById("search-modal-input");
+  const mobileResults = document.getElementById("search-modal-results");
+  const mobileClose = document.getElementById("close-search-modal");
+  const mobileOverlay = document.getElementById("search-modal-overlay");
+
+  // Desktop search popup
+  if (desktopToggle && desktopPopup && desktopClose) {
+    desktopToggle.addEventListener("click", () => {
+      desktopPopup.classList.remove("hidden");
+      desktopPopup.classList.add("flex");
     });
-  
-    closeBtn.addEventListener("click", () => {
-      popup.classList.remove("flex");
-      popup.classList.add("hidden");
+
+    desktopClose.addEventListener("click", () => {
+      desktopPopup.classList.add("hidden");
+      desktopPopup.classList.remove("flex");
     });
-  
+
     document.addEventListener("click", (e) => {
-      if (!popup.contains(e.target) && !toggleBtn.contains(e.target)) {
-        popup.classList.remove("flex");
-        popup.classList.add("hidden");
+      if (!desktopPopup.contains(e.target) && !desktopToggle.contains(e.target)) {
+        desktopPopup.classList.add("hidden");
+        desktopPopup.classList.remove("flex");
       }
     });
-  
+
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
-        popup.classList.remove("flex");
-        popup.classList.add("hidden");
+        desktopPopup.classList.add("hidden");
+        desktopPopup.classList.remove("flex");
       }
     });
-  
-    searchInput.addEventListener("input", async (e) => {
-      const query = e.target.value.trim();
-  
-      if (query === "") {
-        searchResults.innerHTML = "";
-        return;
-      }
-  
-      try {
-        const response = await fetch(
-          `https://v2.api.noroff.dev/auction/listings?title=${query}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "X-Noroff-API-Key": "9fe13230-12f3-4f0d-83c3-5703f9ff0bf6",
-            },
-          }
-        );
-  
-        const { data } = await response.json();
-        const filteredResults = data.filter((listing) =>
-          listing.title.toLowerCase().includes(query.toLowerCase())
-        );
-        displaySearchResults(filteredResults.slice(0, 3));
-      } catch (error) {
-        console.error("Error fetching search results:", error);
-      }
-    });
-  
-    /**
-     * Displays the search results in the search popup.
-     * @param {Array} listings - List of filtered listings to be displayed.
-     */
-    function displaySearchResults(listings) {
-      searchResults.innerHTML = "";
-  
-      if (listings.length === 0) {
-        searchResults.innerHTML = `<li>No results found</li>`;
-        return;
-      }
-  
-      listings.forEach((listing) => {
-        const listItem = document.createElement("li");
-        listItem.classList.add("p-2", "cursor-pointer", "hover:bg-gray-100");
-  
-        listItem.innerHTML = `
-          <a href="listing-details.html?id=${listing.id}" class="text-indigo-500 hover:underline">
-            ${listing.title}
-          </a>
-        `;
-  
-        searchResults.appendChild(listItem);
-      });
-    }
   }
+
+  // Desktop input search
+  if (desktopInput && desktopResults) {
+    desktopInput.addEventListener("input", (e) => handleSearch(e, desktopResults));
+  }
+
+  // Mobile input search
+  if (mobileInput && mobileResults) {
+    mobileInput.addEventListener("input", (e) => handleSearch(e, mobileResults));
+  }
+
+  // Mobile close modal
+  if (mobileClose && mobileOverlay) {
+    mobileClose.addEventListener("click", () => {
+      mobileOverlay.classList.add("hidden");
+    });
+
+    document.addEventListener("click", (e) => {
+      const modal = document.getElementById("search-modal");
+      if (!modal.contains(e.target) && !e.target.closest("#open-mobile-search")) {
+        mobileOverlay.classList.add("hidden");
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        mobileOverlay.classList.add("hidden");
+      }
+    });
+  }
+}
+
+/**
+ * Fetches and filters search results.
+ * @param {Event} e - The input event.
+ * @param {HTMLElement} container - The result container.
+ */
+async function handleSearch(e, container) {
+  const query = e.target.value.trim();
+
+  if (!query) {
+    container.innerHTML = "";
+    container.classList.add("hidden");
+    return;
+  }
+
+  try {
+    const response = await fetch(`https://v2.api.noroff.dev/auction/listings?title=${query}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Noroff-API-Key": "9fe13230-12f3-4f0d-83c3-5703f9ff0bf6",
+      },
+    });
+
+    const { data } = await response.json();
+    const filtered = data.filter(listing =>
+      listing.title.toLowerCase().includes(query.toLowerCase())
+    );
+
+    displaySearchResults(filtered.slice(0, 5), container);
+  } catch (error) {
+    container.innerHTML = `<li class="p-2 text-red-500">Error loading results</li>`;
+    container.classList.remove("hidden");
+  }
+}
+
+/**
+ * Renders search result listings.
+ * @param {Array} listings - The listings to display.
+ * @param {HTMLElement} container - The container for results.
+ */
+function displaySearchResults(listings, container) {
+  container.innerHTML = "";
+  container.classList.remove("hidden");
+
+  if (listings.length === 0) {
+    container.innerHTML = `<li class="p-2 text-sm text-gray-600">No results found</li>`;
+    return;
+  }
+
+  listings.forEach((listing) => {
+    const item = document.createElement("li");
+    item.className = "p-2 text-sm hover:bg-gray-100";
+
+    item.innerHTML = `
+      <a href="listing-details.html?id=${listing.id}" class="block text-indigo-600 hover:underline">
+        ${listing.title}
+      </a>
+    `;
+
+    container.appendChild(item);
+  });
+}

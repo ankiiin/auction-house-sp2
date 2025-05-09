@@ -12,7 +12,9 @@ let isLoading = false;
  */
 async function loadAndRenderListings() {
   isLoading = true;
-  const { listings } = await loadListings(currentPage, 18);
+  const { listings } = await loadListings(currentPage, 36);
+  currentPage++; // Inkrementer for neste side!
+
   const now = new Date();
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -165,12 +167,10 @@ async function placeBid(listingId, bidAmount) {
 
 /**
  * Triggers listing loading when user scrolls near bottom of the page.
- * Increments the current page number before loading more listings.
  * @event window#scroll
  */
 window.addEventListener("scroll", () => {
   if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !isLoading) {
-    currentPage++;
     loadAndRenderListings();
   }
 });

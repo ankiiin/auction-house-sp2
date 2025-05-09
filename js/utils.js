@@ -7,7 +7,7 @@
  * @param {Object} options - The fetch options
  * @returns {Promise<Object>} The response data or an error object
  */
-async function fetchFromAPI(url, options) {
+export async function fetchFromAPI(url, options) {
   try {
     const response = await fetch(url, options);
     if (!response.ok) {
@@ -28,6 +28,7 @@ async function fetchFromAPI(url, options) {
 export function addCredits(amount) {
   let currentCredits = parseInt(localStorage.getItem("userCredits"), 10) || 0;
   currentCredits += amount;
+  localStorage.setItem("userCredits", currentCredits);
   displayUserCredits(currentCredits);
 }
 
@@ -35,9 +36,16 @@ export function addCredits(amount) {
  * Displays the logged-in user's available credits.
  * 
  * @function displayUserCredits
- * @param {number} credits - The amount of credits to display
+ * @param {number} [credits] - The amount of credits to display (optional)
  */
-export async function displayUserCredits(credits) {
+export function displayUserCredits(credits) {
+  const display = document.getElementById("credits-display");
+  const storedCredits = parseInt(localStorage.getItem("userCredits"), 10);
+  const value = credits ?? storedCredits ?? 0;
+
+  if (display) {
+    display.textContent = `Credits: ${value}`;
+  }
 }
 
 /**
@@ -68,7 +76,8 @@ export function subtractCredits(amount) {
 export function logout() {
   localStorage.removeItem("token");
   localStorage.removeItem("user");
-  window.location.href = "login.html";  
+  localStorage.removeItem("accessToken");
+  window.location.href = "login.html";
 }
 
 /**
@@ -81,7 +90,7 @@ export function logout() {
  */
 export function debounce(func, delay) {
   let debounceTimer;
-  return function() {
+  return function () {
     const context = this;
     const args = arguments;
     clearTimeout(debounceTimer);

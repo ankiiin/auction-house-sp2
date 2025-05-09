@@ -94,3 +94,29 @@ export async function loginUser(email, password) {
     throw error;
   }
 }
+
+/**
+ * Logs out the user by clearing all relevant localStorage data
+ * and redirects to the login (index) page.
+ * @function logout
+ */
+export function logout() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  localStorage.removeItem("userEmail");
+  localStorage.removeItem("username");
+  localStorage.removeItem("userBids");
+  localStorage.removeItem("accessToken");
+
+  const keysToRemove = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith("highestBid-")) {
+      keysToRemove.push(key);
+    }
+  }
+
+  keysToRemove.forEach(key => localStorage.removeItem(key));
+
+  window.location.href = "../index.html";
+}
