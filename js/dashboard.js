@@ -58,8 +58,14 @@ function renderProfile(data) {
 
   if (bannerEl && data.banner?.url) {
     bannerEl.style.backgroundImage = `url('${data.banner.url}')`;
+    bannerEl.style.backgroundSize = "cover";
+    bannerEl.style.backgroundPosition = "center";
+    bannerEl.style.backgroundRepeat = "no-repeat";
   } else {
     bannerEl.style.backgroundImage = "url('https://via.placeholder.com/1500x500')";
+    bannerEl.style.backgroundSize = "cover";
+    bannerEl.style.backgroundPosition = "center";
+    bannerEl.style.backgroundRepeat = "no-repeat";
   }
 }
 
