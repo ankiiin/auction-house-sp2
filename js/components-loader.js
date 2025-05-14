@@ -1,5 +1,6 @@
 import { getUserCredits } from "./script.js";
 import { logout } from "./auth.js";
+import { initSearchPopup } from "./search.js"; // 👈 viktig for å re-koble input-lytter
 
 /**
  * @file components-loader.js
@@ -36,7 +37,9 @@ export async function loadNavbar() {
     if (logoutButton) {
       logoutButton.addEventListener("click", logout);
     }
-  } catch (error) {}
+  } catch (error) {
+    console.error("Failed to load navbar:", error);
+  }
 }
 
 /**
@@ -85,7 +88,9 @@ export async function loadHamburgerMenu() {
     setTimeout(() => {
       document.addEventListener("click", handleOutsideClick);
     }, 0);
-  } catch (error) {}
+  } catch (error) {
+    console.error("Failed to load hamburger menu:", error);
+  }
 }
 
 /**
@@ -100,7 +105,9 @@ export async function loadFooter() {
     const response = await fetch("../components/footer.html");
     const html = await response.text();
     container.innerHTML = html;
-  } catch (error) {}
+  } catch (error) {
+    console.error("Failed to load footer:", error);
+  }
 }
 
 /**
@@ -114,7 +121,9 @@ export async function loadSearchPopup() {
     const wrapper = document.createElement("div");
     wrapper.innerHTML = html;
     document.body.appendChild(wrapper);
-  } catch (error) {}
+  } catch (error) {
+    console.error("Failed to load search popup:", error);
+  }
 }
 
 /**
@@ -148,6 +157,12 @@ export async function loadMobileSearchModal() {
     setTimeout(() => {
       document.addEventListener("click", handleOutsideClick);
     }, 0);
+
+    // 🆕 Trigger søkefunksjonalitet når modal er lagt inn
+    import("./search.js").then((module) => {
+      module.initSearchPopup();
+    });
+
   } catch (error) {
     console.error("Failed to load mobile search modal:", error);
   }

@@ -15,7 +15,7 @@ export function initSearchPopup() {
   const mobileClose = document.getElementById("close-search-modal");
   const mobileOverlay = document.getElementById("search-modal-overlay");
 
-  // Desktop search popup
+  // --- DESKTOP SEARCH LOGIKK ---
   if (desktopToggle && desktopPopup && desktopClose) {
     desktopToggle.addEventListener("click", () => {
       desktopPopup.classList.remove("hidden");
@@ -42,17 +42,18 @@ export function initSearchPopup() {
     });
   }
 
-  // Desktop input search
   if (desktopInput && desktopResults) {
     desktopInput.addEventListener("input", (e) => handleSearch(e, desktopResults));
   }
 
-  // Mobile input search
+  // --- MOBIL SEARCH LOGIKK ---
   if (mobileInput && mobileResults) {
-    mobileInput.addEventListener("input", (e) => handleSearch(e, mobileResults));
+    mobileInput.addEventListener("input", (e) => {
+      console.log("Mobile input:", e.target.value); // Debug
+      handleSearch(e, mobileResults);
+    });
   }
 
-  // Mobile close modal
   if (mobileClose && mobileOverlay) {
     mobileClose.addEventListener("click", () => {
       mobileOverlay.classList.add("hidden");
@@ -60,7 +61,7 @@ export function initSearchPopup() {
 
     document.addEventListener("click", (e) => {
       const modal = document.getElementById("search-modal");
-      if (!modal.contains(e.target) && !e.target.closest("#open-mobile-search")) {
+      if (modal && !modal.contains(e.target) && !e.target.closest("#open-mobile-search")) {
         mobileOverlay.classList.add("hidden");
       }
     });
@@ -74,9 +75,9 @@ export function initSearchPopup() {
 }
 
 /**
- * Fetches and filters search results.
- * @param {Event} e - The input event.
- * @param {HTMLElement} container - The result container.
+ * Fetches search results from the API and displays them.
+ * @param {Event} e
+ * @param {HTMLElement} container
  */
 async function handleSearch(e, container) {
   const query = e.target.value.trim();
@@ -89,7 +90,6 @@ async function handleSearch(e, container) {
 
   try {
     const response = await fetch(`https://v2.api.noroff.dev/auction/listings?title=${query}`, {
-      method: "GET",
       headers: {
         "Content-Type": "application/json",
         "X-Noroff-API-Key": "9fe13230-12f3-4f0d-83c3-5703f9ff0bf6",
@@ -97,7 +97,7 @@ async function handleSearch(e, container) {
     });
 
     const { data } = await response.json();
-    const filtered = data.filter(listing =>
+    const filtered = data.filter((listing) =>
       listing.title.toLowerCase().includes(query.toLowerCase())
     );
 
@@ -109,9 +109,9 @@ async function handleSearch(e, container) {
 }
 
 /**
- * Renders search result listings.
- * @param {Array} listings - The listings to display.
- * @param {HTMLElement} container - The container for results.
+ * Renders the search results in a dropdown list.
+ * @param {Array} listings
+ * @param {HTMLElement} container
  */
 function displaySearchResults(listings, container) {
   container.innerHTML = "";

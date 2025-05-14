@@ -25,9 +25,4 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (logoutButton) {
     logoutButton.addEventListener("click", logout);
   }
-
-  const searchInput = document.getElementById("search-input");
-  if (searchInput) {
-    searchInput.addEventListener("input", debounce(() => {}, 500));
-  }
 });
