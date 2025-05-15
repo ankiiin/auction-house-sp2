@@ -142,6 +142,7 @@ function openBidModal(listingId, currentBid) {
       await placeBid(listingId, bidAmount);
       import("./utils.js").then(({ subtractCredits }) => subtractCredits(bidAmount));
       bidModal.classList.add("hidden");
+      window.location.reload();
     }
   };
 }
