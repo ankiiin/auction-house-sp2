@@ -17,15 +17,12 @@ document.addEventListener("DOMContentLoaded", () => {
  * @returns {Promise<Object>} The listing data.
  */
 async function fetchListingById(id) {
-  const response = await fetch(
-    `${API_URL}/auction/listings/${id}?_bids=true&_seller=true`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        "X-Noroff-API-Key": API_KEY,
-      },
-    }
-  );
+  const response = await fetch(`${API_URL}/auction/listings/${id}?_bids=true&_seller=true`, {
+    headers: {
+      "Content-Type": "application/json",
+      "X-Noroff-API-Key": API_KEY,
+    },
+  });
   const data = await response.json();
   return data.data;
 }
@@ -72,10 +69,7 @@ async function renderListingDetails() {
       ? `Time left: ${hoursLeft} hours`
       : `Time left: ${minutesLeft} minutes`;
 
-  const sortedBids = listing.bids.sort(
-    (a, b) => new Date(b.created) - new Date(a.created)
-  );
-
+  const sortedBids = listing.bids.sort((a, b) => new Date(b.created) - new Date(a.created));
   const highestBid = sortedBids[0]?.amount || 0;
   currentBid.textContent = highestBid;
 
@@ -94,7 +88,6 @@ async function renderListingDetails() {
 
   placeBidBtn.addEventListener("click", async () => {
     const bidAmount = parseInt(bidAmountInput.value, 10);
-
     if (isNaN(bidAmount) || bidAmount <= highestBid) {
       bidError.classList.remove("hidden");
       return;
@@ -106,23 +99,24 @@ async function renderListingDetails() {
     const bidData = { amount: bidAmount };
 
     try {
-      const response = await fetch(
-        `${API_URL}/auction/listings/${listingId}/bids`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-            "X-Noroff-API-Key": API_KEY,
-          },
-          body: JSON.stringify(bidData),
-        }
-      );
+      const response = await fetch(`${API_URL}/auction/listings/${listingId}/bids`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          "X-Noroff-API-Key": API_KEY,
+        },
+        body: JSON.stringify(bidData),
+      });
 
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.errors?.[0]?.message || "Failed to place bid");
       }
+
+      const { subtractCredits, displayUserCredits } = await import("./utils.js");
+      subtractCredits(bidAmount);
+      displayUserCredits();
 
       window.location.reload();
     } catch (error) {
