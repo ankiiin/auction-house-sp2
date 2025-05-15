@@ -48,6 +48,51 @@ The project demonstrates skills in:
 
 ## Project Structure
 
+
+| Folder/File              | Description                                           |
+|--------------------------|-------------------------------------------------------|
+| `components/`            | Reusable HTML components (navbar, footer, modals)    |
+| ├── `bid-modal.html`     | Modal for placing bids                                |
+| ├── `footer.html`        | Footer component                                      |
+| ├── `hamburgermenu.html` | Mobile hamburger menu                                 |
+| ├── `navbar.html`        | Top navigation bar                                    |
+| ├── `search-modal.html`  | Mobile search modal                                   |
+| └── `search-popup.html`  | Desktop search popup                                  |
+| `css/`                   | Tailwind input and compiled output                    |
+| ├── `input.css`          | Tailwind input file                                   |
+| └── `styles.css`         | Compiled Tailwind styles                              |
+| `html/`                  | HTML page views                                       |
+| ├── `create-listing.html`| Page for creating a listing                           |
+| ├── `dashboard.html`     | User dashboard with listings                          |
+| ├── `edit-listing.html`  | Edit listing form                                     |
+| ├── `edit-profile.html`  | Profile update view                                   |
+| ├── `feed.html`          | Listing feed (main page after login)                 |
+| ├── `listing-details.html` | Single listing with bid info                      |
+| └── `register.html`      | Registration page                                     |
+| `js/`                    | Modular JavaScript files                              |
+| ├── `auth.js`            | Authentication logic                                  |
+| ├── `bid-modal.js`       | Modal and bid placement logic                         |
+| ├── `components-loader.js`| Loads shared components dynamically                 |
+| ├── `create-listing.js`  | Handles listing creation logic                        |
+| ├── `dashboard.js`       | Renders user data and listing actions                 |
+| ├── `edit-listing.js`    | Logic for editing an existing listing                 |
+| ├── `edit-profile.js`    | Updates user profile info                             |
+| ├── `feed.js`            | Infinite scroll, rendering feed, placing bids         |
+| ├── `init.js`            | Startup logic: loads navbar, footer, and credits      |
+| ├── `listing-details.js` | Handles detail view + bid history                     |
+| ├── `login.js`           | Login validation + redirect logic                     |
+| ├── `register.js`        | Register form with validation                         |
+| ├── `script.js`          | API communication, credits, and listing helpers       |
+| ├── `search.js`          | Mobile + desktop search popup handling                |
+| └── `utils.js`           | Debounce, logout, and credit display functions        |
+| `.gitignore`             | Git excluded files                                    |
+| `.prettierrc`            | Prettier config                                       |
+| `index.html`             | Login page entry point                                |
+| `package.json`           | Project dependencies                                  |
+| `package-lock.json`      | Dependency lock file                                  |
+| `README.md`              | Project documentation                                 |
+| `tailwind.config.js`     | Tailwind configuration                                |
+
 ---
 ## Additional Notes
 
