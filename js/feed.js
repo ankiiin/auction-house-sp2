@@ -140,8 +140,7 @@ function openBidModal(listingId, currentBid) {
     } else {
       bidErrorMessage.classList.add("hidden");
       await placeBid(listingId, bidAmount);
-      updateUserCredits(-bidAmount);
-      import("./utils.js").then(({ displayUserCredits }) => displayUserCredits());
+      import("./utils.js").then(({ subtractCredits }) => subtractCredits(bidAmount));
       bidModal.classList.add("hidden");
     }
   };
