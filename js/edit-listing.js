@@ -37,50 +37,54 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
-
+  
     const title = document.getElementById("title").value.trim();
     const description = document.getElementById("description").value.trim();
     const mediaUrl = document.getElementById("media").value.trim();
     const endsAt = document.getElementById("endsAt").value;
-
-    if (!title || !description || !endsAt) {
+  
+    if (!title || !description) {
       alert("Please fill out all fields.");
       return;
     }
-
+  
     if (description.length > 280) {
       alert("Description must be 280 characters or less.");
       return;
     }
-
-    const now = new Date();
-    const selectedDate = new Date(endsAt);
-    const maxDate = new Date();
-    maxDate.setFullYear(now.getFullYear() + 1);
-
-    if (selectedDate <= now || selectedDate > maxDate) {
-      alert("End date must be in the future and within one year.");
-      return;
-    }
-
-    const media = [];
+  
+    const updatedData = {
+      title,
+      description,
+      media: [],
+    };
+  
     if (mediaUrl) {
       try {
         const url = new URL(mediaUrl);
-        media.push({ url: url.href, alt: title });
+        updatedData.media.push({ url: url.href, alt: title });
       } catch {
         alert("Invalid image URL.");
         return;
       }
     }
-
-    const updatedData = {
-      title,
-      description,
-      media,
-      endsAt: selectedDate.toISOString(),
-    };
-
+  
+    const originalDate = data.endsAt?.split("T")[0];
+  
+    if (endsAt && endsAt !== originalDate) {
+      const now = new Date();
+      const selectedDate = new Date(endsAt);
+      const maxDate = new Date();
+      maxDate.setFullYear(now.getFullYear() + 1);
+  
+      if (selectedDate <= now || selectedDate > maxDate) {
+        alert("End date must be in the future and within one year.");
+        return;
+      }
+  
+      updatedData.endsAt = selectedDate.toISOString();
+    }
+  
     try {
       const result = await sendPutRequest(`auction/listings/${listingId}`, updatedData, token);
       if (result) {
@@ -89,5 +93,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (error) {
       alert("Failed to update listing: " + error.message);
     }
-  });
 });
+  });
