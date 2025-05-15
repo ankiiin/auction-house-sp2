@@ -99,7 +99,7 @@ export async function sendPutRequest(url, data, token) {
   
     try {
       const response = await fetch(
-        `https://v2.api.noroff.dev/auction/listings?page=${page}&limit=${limit}&sort=title&sortOrder=asc&_seller=true&_bids=true`,
+        `https://v2.api.noroff.dev/auction/listings?page=${page}&limit=${limit}&sort=created&sortOrder=desc&_seller=true&_bids=true`,
         options
       );
   

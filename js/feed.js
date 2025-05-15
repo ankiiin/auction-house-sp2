@@ -7,31 +7,30 @@ let isLoading = false;
  * Loads and renders a page of active listings.
  * Filters out expired and own listings. Appends them to the DOM.
  * @async
- * @function loadAndRenderListings
- * @returns {Promise<void>}
  */
 async function loadAndRenderListings() {
   isLoading = true;
   const { listings } = await loadListings(currentPage, 36);
-  currentPage++; // Inkrementer for neste side!
+  currentPage++;
 
   const now = new Date();
   const user = JSON.parse(localStorage.getItem("user"));
-
-  const activeListings = listings
-    .filter(listing => new Date(listing.endsAt) > now && listing.seller?.name !== user?.name)
-    .sort((a, b) => new Date(b.created) - new Date(a.created));
-
   const feedContainer = document.getElementById("listing-feed");
 
   const bids = await Promise.all(
-    activeListings.map(listing => getHighestBid(listing.id))
+    listings.map(listing => getHighestBid(listing.id))
   );
 
-  for (let i = 0; i < activeListings.length; i++) {
-    const listing = activeListings[i];
-    const highestBid = bids[i];
+  let renderedCount = 0;
 
+  for (let i = 0; i < listings.length; i++) {
+    const listing = listings[i];
+
+    if (new Date(listing.endsAt) <= now || listing.seller?.name === user?.name) {
+      continue;
+    }
+
+    const highestBid = bids[i];
     const listingCard = document.createElement("div");
     listingCard.className = "bg-white p-4 rounded-lg shadow-md hover:shadow-lg";
 
@@ -62,16 +61,30 @@ async function loadAndRenderListings() {
     bidButton.addEventListener("click", () => {
       openBidModal(listing.id, highestBid);
     });
+
+    renderedCount++;
+  }
+
+  if (renderedCount === 0) {
+    await loadAndRenderListings();
   }
 
   isLoading = false;
 }
 
 /**
+ * Keeps loading until content fills the screen initially.
+ * @async
+ */
+async function ensureInitialScrollContent() {
+  await loadAndRenderListings();
+  while (document.body.offsetHeight < window.innerHeight + 100 && !isLoading) {
+    await loadAndRenderListings();
+  }
+}
+
+/**
  * Formats time left until auction ends into a readable string.
- * @function formatTimeLeft
- * @param {Date} endDate - The date the listing ends.
- * @returns {string} Formatted time left.
  */
 function formatTimeLeft(endDate) {
   const now = new Date();
@@ -87,10 +100,7 @@ function formatTimeLeft(endDate) {
 }
 
 /**
- * Opens the modal to place a bid and prepares the input field and listeners.
- * @function openBidModal
- * @param {string} listingId - The ID of the listing.
- * @param {number} currentBid - The current highest bid on the listing.
+ * Opens bid modal and sets current value + listeners.
  */
 function openBidModal(listingId, currentBid) {
   const bidModal = document.getElementById("bid-modal");
@@ -127,11 +137,7 @@ function openBidModal(listingId, currentBid) {
 }
 
 /**
- * Sends a bid to the API for the selected listing.
- * @async
- * @function placeBid
- * @param {string} listingId - The ID of the listing.
- * @param {number} bidAmount - The bid amount to place.
+ * Sends bid to API.
  */
 async function placeBid(listingId, bidAmount) {
   const token = localStorage.getItem("accessToken");
@@ -166,8 +172,7 @@ async function placeBid(listingId, bidAmount) {
 }
 
 /**
- * Triggers listing loading when user scrolls near bottom of the page.
- * @event window#scroll
+ * Load more when scrolling to bottom.
  */
 window.addEventListener("scroll", () => {
   if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !isLoading) {
@@ -175,4 +180,19 @@ window.addEventListener("scroll", () => {
   }
 });
 
-loadAndRenderListings();
+async function initialLoad() {
+  await loadAndRenderListings();
+
+  // Hvis høyden på body er mindre enn vinduet, last en ekstra side
+  if (document.body.offsetHeight < window.innerHeight + 100) {
+    await loadAndRenderListings();
+  }
+}
+
+window.addEventListener("scroll", () => {
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !isLoading) {
+    loadAndRenderListings();
+  }
+});
+
+initialLoad();
