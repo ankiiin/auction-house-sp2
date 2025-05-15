@@ -76,7 +76,6 @@ export async function sendPutRequest(url, data, token) {
       const data = await response.json();
       return data.data.credits || 0;
     } catch (error) {
-      alert("Failed to fetch credits.");
     }
   }
   
