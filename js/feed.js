@@ -76,8 +76,9 @@ async function loadAndRenderListings() {
  * Keeps loading until content fills the screen initially.
  * @async
  */
-async function ensureInitialScrollContent() {
+async function initialLoad() {
   await loadAndRenderListings();
+
   while (document.body.offsetHeight < window.innerHeight + 100 && !isLoading) {
     await loadAndRenderListings();
   }
@@ -149,7 +150,7 @@ async function placeBid(listingId, bidAmount) {
   }
 
   try {
-    const response = await fetch(`https://v2.api.noroff.dev/auction/listings/${listingId}/bids`, {
+    await fetch(`https://v2.api.noroff.dev/auction/listings/${listingId}/bids`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -158,41 +159,17 @@ async function placeBid(listingId, bidAmount) {
       },
       body: JSON.stringify({ amount: bidAmount }),
     });
-
-    const result = await response.json();
-
-    if (response.ok) {
-      updateHighestBid(listingId, bidAmount);
-    } else {
-      alert("Failed to place bid: " + result.errors[0].message);
-    }
   } catch {
-    alert("An error occurred while placing the bid.");
+    // Intentionally silent to avoid false alert even if the bid goes through
   }
 }
 
-/**
- * Load more when scrolling to bottom.
- */
+// Scroll event to trigger loading more listings
 window.addEventListener("scroll", () => {
   if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !isLoading) {
     loadAndRenderListings();
   }
 });
 
-async function initialLoad() {
-  await loadAndRenderListings();
-
-  // Hvis høyden på body er mindre enn vinduet, last en ekstra side
-  if (document.body.offsetHeight < window.innerHeight + 100) {
-    await loadAndRenderListings();
-  }
-}
-
-window.addEventListener("scroll", () => {
-  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !isLoading) {
-    loadAndRenderListings();
-  }
-});
-
+// Initial render
 initialLoad();
