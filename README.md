@@ -48,11 +48,11 @@ The project demonstrates skills in:
 
 ## Project Structure
 
-├── components/          → Shared components like navbar, footer, modals
-├── css/                 → Tailwind output and global styles
-├── js/                  → Modular JavaScript (API, auth, views, utils)
-├── html/                → Page-specific HTML views
-├── index.html           → Login view
+├── components/ → Shared components like navbar, footer, modals
+├── css/ → Tailwind output and global styles
+├── js/ → Modular JavaScript (API, auth, views, utils)
+├── html/ → Page-specific HTML views
+├── index.html → Login view
 └── README.md
 ---
 ## Additional Notes
