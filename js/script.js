@@ -63,11 +63,6 @@ export async function sendPutRequest(url, data, token) {
   export async function getUserCredits() {
     const token = localStorage.getItem("accessToken");
   
-    if (!token) {
-      alert("You need to be logged in to fetch credits.");
-      return;
-    }
-  
     const user = JSON.parse(localStorage.getItem("user"));
     const options = {
       headers: {
