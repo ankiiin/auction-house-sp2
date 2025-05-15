@@ -3,6 +3,9 @@
  * @description Manages the search functionality for both desktop and mobile.
  */
 
+/**
+ * Initializes both desktop and mobile search popups and event listeners.
+ */
 export function initSearchPopup() {
   const desktopToggle = document.getElementById("search-toggle");
   const desktopPopup = document.getElementById("search-popup");
@@ -15,7 +18,6 @@ export function initSearchPopup() {
   const mobileClose = document.getElementById("close-search-modal");
   const mobileOverlay = document.getElementById("search-modal-overlay");
 
-  // --- DESKTOP SEARCH LOGIKK ---
   if (desktopToggle && desktopPopup && desktopClose) {
     desktopToggle.addEventListener("click", () => {
       desktopPopup.classList.remove("hidden");
@@ -28,10 +30,7 @@ export function initSearchPopup() {
     });
 
     document.addEventListener("click", (e) => {
-      if (
-        !desktopPopup.contains(e.target) &&
-        !desktopToggle.contains(e.target)
-      ) {
+      if (!desktopPopup.contains(e.target) && !desktopToggle.contains(e.target)) {
         desktopPopup.classList.add("hidden");
         desktopPopup.classList.remove("flex");
       }
@@ -46,15 +45,11 @@ export function initSearchPopup() {
   }
 
   if (desktopInput && desktopResults) {
-    desktopInput.addEventListener("input", (e) =>
-      handleSearch(e, desktopResults),
-    );
+    desktopInput.addEventListener("input", (e) => handleSearch(e, desktopResults));
   }
 
-  // --- MOBIL SEARCH LOGIKK ---
   if (mobileInput && mobileResults) {
     mobileInput.addEventListener("input", (e) => {
-      console.log("Mobile input:", e.target.value); // Debug
       handleSearch(e, mobileResults);
     });
   }
@@ -66,11 +61,7 @@ export function initSearchPopup() {
 
     document.addEventListener("click", (e) => {
       const modal = document.getElementById("search-modal");
-      if (
-        modal &&
-        !modal.contains(e.target) &&
-        !e.target.closest("#open-mobile-search")
-      ) {
+      if (modal && !modal.contains(e.target) && !e.target.closest("#open-mobile-search")) {
         mobileOverlay.classList.add("hidden");
       }
     });
@@ -85,8 +76,8 @@ export function initSearchPopup() {
 
 /**
  * Fetches search results from the API and displays them.
- * @param {Event} e
- * @param {HTMLElement} container
+ * @param {Event} e - The input event from the search field.
+ * @param {HTMLElement} container - The container to display search results in.
  */
 async function handleSearch(e, container) {
   const query = e.target.value.trim();
@@ -98,19 +89,16 @@ async function handleSearch(e, container) {
   }
 
   try {
-    const response = await fetch(
-      `https://v2.api.noroff.dev/auction/listings?title=${query}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "X-Noroff-API-Key": "9fe13230-12f3-4f0d-83c3-5703f9ff0bf6",
-        },
+    const response = await fetch(`https://v2.api.noroff.dev/auction/listings?title=${query}`, {
+      headers: {
+        "Content-Type": "application/json",
+        "X-Noroff-API-Key": "9fe13230-12f3-4f0d-83c3-5703f9ff0bf6",
       },
-    );
+    });
 
     const { data } = await response.json();
     const filtered = data.filter((listing) =>
-      listing.title.toLowerCase().includes(query.toLowerCase()),
+      listing.title.toLowerCase().includes(query.toLowerCase())
     );
 
     displaySearchResults(filtered.slice(0, 5), container);
@@ -122,8 +110,8 @@ async function handleSearch(e, container) {
 
 /**
  * Renders the search results in a dropdown list.
- * @param {Array} listings
- * @param {HTMLElement} container
+ * @param {Array} listings - The list of matching listings.
+ * @param {HTMLElement} container - The container to append the results to.
  */
 function displaySearchResults(listings, container) {
   container.innerHTML = "";
@@ -137,13 +125,11 @@ function displaySearchResults(listings, container) {
   listings.forEach((listing) => {
     const item = document.createElement("li");
     item.className = "p-2 text-sm hover:bg-gray-100";
-
     item.innerHTML = `
       <a href="listing-details.html?id=${listing.id}" class="block text-indigo-600 hover:underline">
         ${listing.title}
       </a>
     `;
-
     container.appendChild(item);
   });
 }

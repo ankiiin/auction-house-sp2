@@ -18,7 +18,7 @@ async function loadAndRenderListings() {
   const feedContainer = document.getElementById("listing-feed");
 
   const bids = await Promise.all(
-    listings.map((listing) => getHighestBid(listing.id)),
+    listings.map((listing) => getHighestBid(listing.id))
   );
 
   let renderedCount = 0;
@@ -35,7 +35,8 @@ async function loadAndRenderListings() {
 
     const highestBid = bids[i];
     const listingCard = document.createElement("div");
-    listingCard.className = "bg-white p-4 rounded-lg shadow-md hover:shadow-lg";
+    listingCard.className =
+      "bg-white p-4 rounded-lg shadow-md hover:shadow-lg";
 
     const imageUrl = listing.media?.[0]?.url;
     const finalImageUrl =
@@ -77,7 +78,7 @@ async function loadAndRenderListings() {
 }
 
 /**
- * Keeps loading until content fills the screen initially.
+ * Ensures initial content fills the screen.
  * @async
  */
 async function initialLoad() {
@@ -89,7 +90,9 @@ async function initialLoad() {
 }
 
 /**
- * Formats time left until auction ends into a readable string.
+ * Formats time left until auction ends.
+ * @param {Date} endDate
+ * @returns {string}
  */
 function formatTimeLeft(endDate) {
   const now = new Date();
@@ -105,7 +108,9 @@ function formatTimeLeft(endDate) {
 }
 
 /**
- * Opens bid modal and sets current value + listeners.
+ * Opens the bid modal with listeners.
+ * @param {string} listingId
+ * @param {number} currentBid
  */
 function openBidModal(listingId, currentBid) {
   const bidModal = document.getElementById("bid-modal");
@@ -143,6 +148,8 @@ function openBidModal(listingId, currentBid) {
 
 /**
  * Sends bid to API.
+ * @param {string} listingId
+ * @param {number} bidAmount
  */
 async function placeBid(listingId, bidAmount) {
   const token = localStorage.getItem("accessToken");
@@ -164,14 +171,14 @@ async function placeBid(listingId, bidAmount) {
           "X-Noroff-API-Key": "e6f16bc6-a633-40af-ad6b-db10b065d4e2",
         },
         body: JSON.stringify({ amount: bidAmount }),
-      },
+      }
     );
-  } catch {
-    // Intentionally silent to avoid false alert even if the bid goes through
-  }
+  } catch {}
 }
 
-// Scroll event to trigger loading more listings
+/**
+ * Loads more listings when scrolled to bottom.
+ */
 window.addEventListener("scroll", () => {
   if (
     window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
@@ -181,5 +188,4 @@ window.addEventListener("scroll", () => {
   }
 });
 
-// Initial render
 initialLoad();

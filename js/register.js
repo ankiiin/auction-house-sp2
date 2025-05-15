@@ -1,7 +1,13 @@
+/**
+ * @file register.js
+ * @description Handles registration form validation and submission for Auction House.
+ * @module register
+ */
+
 import { registerUser, loginUser } from "./auth.js";
 
 /**
- * Initializes register form handling and validation
+ * Initializes register form handling and validation.
  * @function handleRegisterForm
  */
 function handleRegisterForm() {
@@ -14,9 +20,7 @@ function handleRegisterForm() {
   const emailError = document.getElementById("email-error");
   const passwordError = document.getElementById("password-error");
 
-  if (!form || !nameInput || !emailInput || !passwordInput) {
-    return;
-  }
+  if (!form || !nameInput || !emailInput || !passwordInput) return;
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -28,7 +32,6 @@ function handleRegisterForm() {
     const name = nameInput.value.trim();
     const email = emailInput.value.trim();
     const password = passwordInput.value;
-
     let hasError = false;
 
     if (!name) {

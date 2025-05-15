@@ -83,10 +83,11 @@ export async function loginUser(email, password) {
             Authorization: `Bearer ${token}`,
             "X-Noroff-API-Key": "1d6d6a25-2013-4a8e-9a20-f8e10b64f3a8",
           },
-        },
+        }
       );
 
       const creditsData = await creditsResponse.json();
+
       if (creditsData && creditsData.credits) {
         return { ...data, credits: creditsData.credits };
       }
@@ -100,7 +101,7 @@ export async function loginUser(email, password) {
 
 /**
  * Logs out the user by clearing all relevant localStorage data
- * and redirects to the login (index) page.
+ * and redirects to the login page.
  * @function logout
  */
 export function logout() {

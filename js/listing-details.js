@@ -13,7 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
 /**
  * Fetches the listing data by ID from the API.
  * @async
- * @function fetchListingById
  * @param {string} id - The listing ID from the query parameter.
  * @returns {Promise<Object>} The listing data.
  */
@@ -25,7 +24,7 @@ async function fetchListingById(id) {
         "Content-Type": "application/json",
         "X-Noroff-API-Key": API_KEY,
       },
-    },
+    }
   );
   const data = await response.json();
   return data.data;
@@ -34,7 +33,6 @@ async function fetchListingById(id) {
 /**
  * Renders the listing details and bidding UI.
  * @async
- * @function renderListingDetails
  */
 async function renderListingDetails() {
   const params = new URLSearchParams(window.location.search);
@@ -58,8 +56,7 @@ async function renderListingDetails() {
   imageElement.src = listing.media?.[0]?.url || "";
   imageElement.alt = listing.title;
   titleElement.textContent = listing.title;
-  descriptionElement.textContent =
-    listing.description || "No description provided.";
+  descriptionElement.textContent = listing.description || "No description provided.";
   sellerName.textContent = listing.seller?.name || "Unknown Seller";
 
   const endDate = new Date(listing.endsAt);
@@ -67,16 +64,18 @@ async function renderListingDetails() {
   const timeDiff = endDate - now;
   const hoursLeft = Math.floor(timeDiff / (1000 * 60 * 60));
   const minutesLeft = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+
   timeLeft.textContent =
     timeDiff <= 0
       ? "Auction ended"
       : hoursLeft > 0
-        ? `Time left: ${hoursLeft} hours`
-        : `Time left: ${minutesLeft} minutes`;
+      ? `Time left: ${hoursLeft} hours`
+      : `Time left: ${minutesLeft} minutes`;
 
   const sortedBids = listing.bids.sort(
-    (a, b) => new Date(b.created) - new Date(a.created),
+    (a, b) => new Date(b.created) - new Date(a.created)
   );
+
   const highestBid = sortedBids[0]?.amount || 0;
   currentBid.textContent = highestBid;
 
@@ -95,6 +94,7 @@ async function renderListingDetails() {
 
   placeBidBtn.addEventListener("click", async () => {
     const bidAmount = parseInt(bidAmountInput.value, 10);
+
     if (isNaN(bidAmount) || bidAmount <= highestBid) {
       bidError.classList.remove("hidden");
       return;
@@ -116,7 +116,7 @@ async function renderListingDetails() {
             "X-Noroff-API-Key": API_KEY,
           },
           body: JSON.stringify(bidData),
-        },
+        }
       );
 
       if (!response.ok) {

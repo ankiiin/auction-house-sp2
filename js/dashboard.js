@@ -3,6 +3,11 @@ import { loadNavbar, loadFooter } from "./components-loader.js";
 const API_KEY = "e6f16bc6-a633-40af-ad6b-db10b065d4e2";
 
 /**
+ * @file dashboard.js
+ * @description Handles dashboard functionality: loading user data, listings, and deletion.
+ */
+
+/**
  * Initializes the dashboard when the DOM is ready.
  * @async
  */
@@ -29,7 +34,7 @@ async function initDashboard() {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           "X-Noroff-API-Key": API_KEY,
         },
-      },
+      }
     );
 
     const { data } = await response.json();
@@ -42,7 +47,7 @@ async function initDashboard() {
 
 /**
  * Renders the user's profile information on the dashboard.
- * @param {Object} data
+ * @param {Object} data - User profile data
  */
 function renderProfile(data) {
   const nameEl = document.getElementById("profile-name");
@@ -52,21 +57,13 @@ function renderProfile(data) {
 
   if (nameEl) nameEl.textContent = data.name;
   if (bioEl) bioEl.textContent = data.bio || "No bio yet";
-
-  if (avatarEl && data.avatar?.url) {
-    avatarEl.src = data.avatar.url;
-  } else {
-    avatarEl.src = "https://via.placeholder.com/150";
+  if (avatarEl) {
+    avatarEl.src = data.avatar?.url || "https://via.placeholder.com/150";
   }
 
-  if (bannerEl && data.banner?.url) {
-    bannerEl.style.backgroundImage = `url('${data.banner.url}')`;
-    bannerEl.style.backgroundSize = "cover";
-    bannerEl.style.backgroundPosition = "center";
-    bannerEl.style.backgroundRepeat = "no-repeat";
-  } else {
-    bannerEl.style.backgroundImage =
-      "url('https://via.placeholder.com/1500x500')";
+  const bannerUrl = data.banner?.url || "https://via.placeholder.com/1500x500";
+  if (bannerEl) {
+    bannerEl.style.backgroundImage = `url('${bannerUrl}')`;
     bannerEl.style.backgroundSize = "cover";
     bannerEl.style.backgroundPosition = "center";
     bannerEl.style.backgroundRepeat = "no-repeat";
@@ -75,7 +72,7 @@ function renderProfile(data) {
 
 /**
  * Renders the user's listings.
- * @param {Array} listings
+ * @param {Array} listings - Array of listing objects
  */
 function renderListings(listings = []) {
   const listingsContainer = document.getElementById("my-listings");
@@ -96,10 +93,8 @@ function renderListings(listings = []) {
     const card = document.createElement("div");
     card.className = "bg-white p-4 rounded shadow-sm border border-gray-200";
 
-    const imageUrl =
-      listing.media?.[0]?.url || "https://via.placeholder.com/400x300";
+    const imageUrl = listing.media?.[0]?.url || "https://via.placeholder.com/400x300";
     const imageAlt = listing.media?.[0]?.alt || listing.title;
-
     const bidCount = listing._count?.bids || 0;
     const highestBid = listing.bids?.length
       ? Math.max(...listing.bids.map((bid) => bid.amount))
@@ -132,7 +127,7 @@ function renderListings(listings = []) {
 
 /**
  * Deletes a listing by ID and refreshes the dashboard.
- * @param {string} id
+ * @param {string} id - Listing ID to delete
  * @async
  */
 async function deleteListing(id) {
@@ -148,7 +143,7 @@ async function deleteListing(id) {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           "X-Noroff-API-Key": API_KEY,
         },
-      },
+      }
     );
 
     if (!response.ok) {

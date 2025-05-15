@@ -1,15 +1,17 @@
-import { getUserCredits } from "./script.js";
-import { logout } from "./auth.js";
-import { initSearchPopup } from "./search.js"; // 👈 viktig for å re-koble input-lytter
-
 /**
  * @file components-loader.js
  * @description Loads reusable components like navbar, footer, and modals into the page.
  */
 
+import { getUserCredits } from "./script.js";
+import { logout } from "./auth.js";
+import { initSearchPopup } from "./search.js";
+
 /**
  * Loads the navbar and attaches event listeners.
  * @async
+ * @function loadNavbar
+ * @returns {Promise<void>}
  */
 export async function loadNavbar() {
   const container = document.getElementById("navbar-container");
@@ -45,6 +47,8 @@ export async function loadNavbar() {
 /**
  * Loads the hamburger menu and sets up events for logout and search modal.
  * @async
+ * @function loadHamburgerMenu
+ * @returns {Promise<void>}
  */
 export async function loadHamburgerMenu() {
   try {
@@ -96,6 +100,8 @@ export async function loadHamburgerMenu() {
 /**
  * Loads the footer.
  * @async
+ * @function loadFooter
+ * @returns {Promise<void>}
  */
 export async function loadFooter() {
   const container = document.getElementById("footer-container");
@@ -113,6 +119,8 @@ export async function loadFooter() {
 /**
  * Loads the desktop search popup.
  * @async
+ * @function loadSearchPopup
+ * @returns {Promise<void>}
  */
 export async function loadSearchPopup() {
   try {
@@ -127,8 +135,10 @@ export async function loadSearchPopup() {
 }
 
 /**
- * Loads the mobile search modal and sets up events.
+ * Loads the mobile search modal and initializes the search input after rendering.
  * @async
+ * @function loadMobileSearchModal
+ * @returns {Promise<void>}
  */
 export async function loadMobileSearchModal() {
   try {
@@ -158,18 +168,18 @@ export async function loadMobileSearchModal() {
       document.addEventListener("click", handleOutsideClick);
     }, 0);
 
-    // 🆕 Trigger søkefunksjonalitet når modal er lagt inn
-    import("./search.js").then((module) => {
-      module.initSearchPopup();
-    });
+    const searchModule = await import("./search.js");
+    searchModule.initSearchPopup();
   } catch (error) {
     console.error("Failed to load mobile search modal:", error);
   }
 }
 
 /**
- * Loads all layout components.
+ * Loads all shared layout components into the page.
  * @async
+ * @function loadComponents
+ * @returns {Promise<void>}
  */
 export async function loadComponents() {
   await loadNavbar();

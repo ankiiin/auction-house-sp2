@@ -1,9 +1,10 @@
 import { sendPutRequest } from "./script.js";
 
 /**
- * Handles the profile update process when the DOM is fully loaded.
- * Allows the user to update their banner image, profile picture, and bio.
+ * @file edit-profile.js
+ * @description Allows the user to update their banner image, avatar, and bio using the API.
  */
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("edit-profile-form");
   const bannerImageInput = document.getElementById("banner-image");
@@ -12,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const saveButton = document.getElementById("save-button");
 
   const user = JSON.parse(localStorage.getItem("user"));
+
   if (user) {
     bannerImageInput.value = user.banner || "";
     profileImageInput.value = user.avatar || "";
@@ -19,9 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /**
-   * Handles the save button click event. It collects the updated data
-   * from the form and sends a PUT request to update the user's profile.
-   * @param {Event} event - The event triggered by clicking the save button.
+   * Updates the user's profile based on form input.
+   * @param {Event} event
+   * @returns {Promise<void>}
    */
   saveButton.addEventListener("click", async (event) => {
     event.preventDefault();
@@ -31,12 +33,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const bio = bioInput.value.trim();
 
     const updatedData = {
-      banner: {
-        url: bannerImage || user.banner,
-      },
-      avatar: {
-        url: profileImage || user.avatar,
-      },
+      banner: { url: bannerImage || user.banner },
+      avatar: { url: profileImage || user.avatar },
       bio: bio || user.bio,
     };
 
@@ -44,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const result = await sendPutRequest(
         `auction/profiles/${user.name}`,
         updatedData,
-        localStorage.getItem("accessToken"),
+        localStorage.getItem("accessToken")
       );
 
       user.banner = updatedData.banner.url;

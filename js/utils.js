@@ -1,11 +1,16 @@
 /**
+ * @file utils.js
+ * @description Contains utility functions for handling API fetch, credits management, debouncing, and logout.
+ */
+
+/**
  * Fetches data from the API and handles errors.
  *
  * @async
  * @function fetchFromAPI
- * @param {string} url - The API URL
- * @param {Object} options - The fetch options
- * @returns {Promise<Object>} The response data or an error object
+ * @param {string} url - The API URL.
+ * @param {Object} options - The fetch options.
+ * @returns {Promise<Object>} The response data or an error object.
  */
 export async function fetchFromAPI(url, options) {
   try {
@@ -23,7 +28,7 @@ export async function fetchFromAPI(url, options) {
  * Adds credits to the user's balance and updates the UI.
  *
  * @function addCredits
- * @param {number} amount - The amount of credits to add
+ * @param {number} amount - The amount of credits to add.
  */
 export function addCredits(amount) {
   let currentCredits = parseInt(localStorage.getItem("userCredits"), 10) || 0;
@@ -36,7 +41,7 @@ export function addCredits(amount) {
  * Displays the logged-in user's available credits.
  *
  * @function displayUserCredits
- * @param {number} [credits] - The amount of credits to display (optional)
+ * @param {number} [credits] - The amount of credits to display (optional).
  */
 export function displayUserCredits(credits) {
   const display = document.getElementById("credits-display");
@@ -52,7 +57,7 @@ export function displayUserCredits(credits) {
  * Subtracts credits from the user's balance and updates the UI.
  *
  * @function subtractCredits
- * @param {number} amount - The amount of credits to subtract
+ * @param {number} amount - The amount of credits to subtract.
  */
 export function subtractCredits(amount) {
   let currentCredits = parseInt(localStorage.getItem("userCredits"), 10) || 0;
@@ -68,8 +73,7 @@ export function subtractCredits(amount) {
 }
 
 /**
- * Logs out the user by removing the token and user information from localStorage.
- * Then redirects to the login page.
+ * Logs out the user by clearing session data and redirecting to login.
  *
  * @function logout
  */
@@ -81,12 +85,12 @@ export function logout() {
 }
 
 /**
- * Creates a debounced version of the provided function.
+ * Creates a debounced version of a given function.
  *
  * @function debounce
- * @param {Function} func - The function to debounce
- * @param {number} delay - The delay in milliseconds before calling the function
- * @returns {Function} The debounced function
+ * @param {Function} func - The function to debounce.
+ * @param {number} delay - The delay in milliseconds before calling the function.
+ * @returns {Function} The debounced function.
  */
 export function debounce(func, delay) {
   let debounceTimer;

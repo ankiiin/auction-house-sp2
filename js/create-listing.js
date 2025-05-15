@@ -1,20 +1,16 @@
 import { createListing } from "./script.js";
 
 /**
- * Initializes the create listing form when the DOM is ready.
- *
- * @function document.addEventListener
+ * @file create-listing.js
+ * @description Handles listing creation form logic and API submission.
+ */
+
+/**
+ * Initializes the create listing form when the DOM is fully loaded.
  */
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("create-listing-form");
 
-  /**
-   * Handles the form submission to create a new listing.
-   *
-   * @param {Event} event - The form submission event.
-   * @async
-   * @function form.submit
-   */
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
 

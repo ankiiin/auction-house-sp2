@@ -1,9 +1,10 @@
 import { fetchFromAPI, sendPutRequest } from "./script.js";
 
 /**
- * Initializes the edit form by loading listing data and setting up the form submission.
- * @async
+ * @file edit-listing.js
+ * @description Loads an existing listing, populates the edit form, and handles updates via PUT request.
  */
+
 document.addEventListener("DOMContentLoaded", async () => {
   const form = document.getElementById("edit-listing-form");
   const params = new URLSearchParams(window.location.search);
@@ -24,8 +25,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const response = await fetchFromAPI(
     `https://v2.api.noroff.dev/auction/listings/${listingId}`,
-    options,
+    options
   );
+
   const data = response?.data;
 
   if (!data) {
@@ -92,8 +94,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       const result = await sendPutRequest(
         `auction/listings/${listingId}`,
         updatedData,
-        token,
+        token
       );
+
       if (result) {
         window.location.href = "dashboard.html";
       }

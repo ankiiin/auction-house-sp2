@@ -25,7 +25,6 @@ function handleLoginForm() {
 
     const email = emailInput.value.trim();
     const password = passwordInput.value;
-
     let hasError = false;
 
     if (!email.endsWith("@stud.noroff.no")) {
