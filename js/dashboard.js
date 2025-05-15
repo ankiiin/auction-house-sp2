@@ -21,13 +21,16 @@ async function initDashboard() {
   if (!user || !user.name) return;
 
   try {
-    const response = await fetch(`https://v2.api.noroff.dev/auction/profiles/${user.name}?_listings=true`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        "X-Noroff-API-Key": API_KEY,
+    const response = await fetch(
+      `https://v2.api.noroff.dev/auction/profiles/${user.name}?_listings=true`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          "X-Noroff-API-Key": API_KEY,
+        },
       },
-    });
+    );
 
     const { data } = await response.json();
     renderProfile(data);
@@ -62,7 +65,8 @@ function renderProfile(data) {
     bannerEl.style.backgroundPosition = "center";
     bannerEl.style.backgroundRepeat = "no-repeat";
   } else {
-    bannerEl.style.backgroundImage = "url('https://via.placeholder.com/1500x500')";
+    bannerEl.style.backgroundImage =
+      "url('https://via.placeholder.com/1500x500')";
     bannerEl.style.backgroundSize = "cover";
     bannerEl.style.backgroundPosition = "center";
     bannerEl.style.backgroundRepeat = "no-repeat";
@@ -92,12 +96,13 @@ function renderListings(listings = []) {
     const card = document.createElement("div");
     card.className = "bg-white p-4 rounded shadow-sm border border-gray-200";
 
-    const imageUrl = listing.media?.[0]?.url || "https://via.placeholder.com/400x300";
+    const imageUrl =
+      listing.media?.[0]?.url || "https://via.placeholder.com/400x300";
     const imageAlt = listing.media?.[0]?.alt || listing.title;
 
     const bidCount = listing._count?.bids || 0;
     const highestBid = listing.bids?.length
-      ? Math.max(...listing.bids.map(bid => bid.amount))
+      ? Math.max(...listing.bids.map((bid) => bid.amount))
       : "No bids yet";
 
     card.innerHTML = `
@@ -135,13 +140,16 @@ async function deleteListing(id) {
   if (!confirmed) return;
 
   try {
-    const response = await fetch(`https://v2.api.noroff.dev/auction/listings/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        "X-Noroff-API-Key": API_KEY,
+    const response = await fetch(
+      `https://v2.api.noroff.dev/auction/listings/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          "X-Noroff-API-Key": API_KEY,
+        },
       },
-    });
+    );
 
     if (!response.ok) {
       throw new Error("Failed to delete listing");

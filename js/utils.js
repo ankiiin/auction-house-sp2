@@ -1,6 +1,6 @@
 /**
  * Fetches data from the API and handles errors.
- * 
+ *
  * @async
  * @function fetchFromAPI
  * @param {string} url - The API URL
@@ -21,7 +21,7 @@ export async function fetchFromAPI(url, options) {
 
 /**
  * Adds credits to the user's balance and updates the UI.
- * 
+ *
  * @function addCredits
  * @param {number} amount - The amount of credits to add
  */
@@ -34,7 +34,7 @@ export function addCredits(amount) {
 
 /**
  * Displays the logged-in user's available credits.
- * 
+ *
  * @function displayUserCredits
  * @param {number} [credits] - The amount of credits to display (optional)
  */
@@ -50,7 +50,7 @@ export function displayUserCredits(credits) {
 
 /**
  * Subtracts credits from the user's balance and updates the UI.
- * 
+ *
  * @function subtractCredits
  * @param {number} amount - The amount of credits to subtract
  */
@@ -70,7 +70,7 @@ export function subtractCredits(amount) {
 /**
  * Logs out the user by removing the token and user information from localStorage.
  * Then redirects to the login page.
- * 
+ *
  * @function logout
  */
 export function logout() {
@@ -82,7 +82,7 @@ export function logout() {
 
 /**
  * Creates a debounced version of the provided function.
- * 
+ *
  * @function debounce
  * @param {Function} func - The function to debounce
  * @param {number} delay - The delay in milliseconds before calling the function

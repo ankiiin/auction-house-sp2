@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const result = await sendPutRequest(
         `auction/profiles/${user.name}`,
         updatedData,
-        localStorage.getItem("accessToken")
+        localStorage.getItem("accessToken"),
       );
 
       user.banner = updatedData.banner.url;

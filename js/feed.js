@@ -18,7 +18,7 @@ async function loadAndRenderListings() {
   const feedContainer = document.getElementById("listing-feed");
 
   const bids = await Promise.all(
-    listings.map(listing => getHighestBid(listing.id))
+    listings.map((listing) => getHighestBid(listing.id)),
   );
 
   let renderedCount = 0;
@@ -26,7 +26,10 @@ async function loadAndRenderListings() {
   for (let i = 0; i < listings.length; i++) {
     const listing = listings[i];
 
-    if (new Date(listing.endsAt) <= now || listing.seller?.name === user?.name) {
+    if (
+      new Date(listing.endsAt) <= now ||
+      listing.seller?.name === user?.name
+    ) {
       continue;
     }
 
@@ -35,9 +38,10 @@ async function loadAndRenderListings() {
     listingCard.className = "bg-white p-4 rounded-lg shadow-md hover:shadow-lg";
 
     const imageUrl = listing.media?.[0]?.url;
-    const finalImageUrl = imageUrl && (imageUrl.startsWith("http") || imageUrl.startsWith("https"))
-      ? imageUrl
-      : "https://picsum.photos/400/300?text=No+Image";
+    const finalImageUrl =
+      imageUrl && (imageUrl.startsWith("http") || imageUrl.startsWith("https"))
+        ? imageUrl
+        : "https://picsum.photos/400/300?text=No+Image";
 
     const endDate = new Date(listing.endsAt);
     const timeLeft = formatTimeLeft(endDate);
@@ -150,15 +154,18 @@ async function placeBid(listingId, bidAmount) {
   }
 
   try {
-    await fetch(`https://v2.api.noroff.dev/auction/listings/${listingId}/bids`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-        "X-Noroff-API-Key": "e6f16bc6-a633-40af-ad6b-db10b065d4e2",
+    await fetch(
+      `https://v2.api.noroff.dev/auction/listings/${listingId}/bids`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          "X-Noroff-API-Key": "e6f16bc6-a633-40af-ad6b-db10b065d4e2",
+        },
+        body: JSON.stringify({ amount: bidAmount }),
       },
-      body: JSON.stringify({ amount: bidAmount }),
-    });
+    );
   } catch {
     // Intentionally silent to avoid false alert even if the bid goes through
   }
@@ -166,7 +173,10 @@ async function placeBid(listingId, bidAmount) {
 
 // Scroll event to trigger loading more listings
 window.addEventListener("scroll", () => {
-  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 && !isLoading) {
+  if (
+    window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
+    !isLoading
+  ) {
     loadAndRenderListings();
   }
 });

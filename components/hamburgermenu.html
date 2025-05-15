@@ -1,20 +1,47 @@
 <div id="hamburger-overlay" class="fixed inset-0 z-50">
-    <div class="absolute top-4 left-4">
-      <div id="hamburger-modal" class="bg-white rounded-lg shadow-lg p-6 w-60 relative border border-gray-200">
-        <button id="close-menu" class="absolute top-2 right-2 text-gray-400 hover:text-gray-600 text-lg" aria-label="Close menu">
-          &times;
+  <div class="absolute top-4 left-4">
+    <div
+      id="hamburger-modal"
+      class="bg-white rounded-lg shadow-lg p-6 w-60 relative border border-gray-200"
+    >
+      <button
+        id="close-menu"
+        class="absolute top-2 right-2 text-gray-400 hover:text-gray-600 text-lg"
+        aria-label="Close menu"
+      >
+        &times;
+      </button>
+      <nav class="flex flex-col space-y-4 mt-4">
+        <a
+          href="feed.html"
+          class="font-medium text-gray-800 hover:text-indigo-500"
+          >Home</a
+        >
+        <a
+          href="create-listing.html"
+          class="font-medium text-gray-800 hover:text-indigo-500"
+          >Create Listings</a
+        >
+        <a
+          href="dashboard.html"
+          class="font-medium text-gray-800 hover:text-indigo-500"
+          >My Profile</a
+        >
+        <a
+          href="#"
+          id="logout-button"
+          class="text-sm font-medium text-gray-800 hover:text-indigo-500"
+          >Logout</a
+        >
+      </nav>
+      <div class="mt-6">
+        <button
+          id="open-mobile-search"
+          class="text-left text-sm font-medium text-gray-800 hover:text-indigo-500 mt-4"
+        >
+          🔍 Search
         </button>
-        <nav class="flex flex-col space-y-4 mt-4">
-          <a href="feed.html" class="font-medium text-gray-800 hover:text-indigo-500">Home</a>
-          <a href="create-listing.html" class="font-medium text-gray-800 hover:text-indigo-500">Create Listings</a>
-          <a href="dashboard.html" class="font-medium text-gray-800 hover:text-indigo-500">My Profile</a>
-          <a href="#" id="logout-button" class="text-sm font-medium text-gray-800 hover:text-indigo-500">Logout</a>
-        </nav>
-        <div class="mt-6">
-            <button id="open-mobile-search" class="text-left text-sm font-medium text-gray-800 hover:text-indigo-500 mt-4">
-                🔍 Search
-              </button>
-        </div>
       </div>
     </div>
   </div>
+</div>

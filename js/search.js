@@ -28,7 +28,10 @@ export function initSearchPopup() {
     });
 
     document.addEventListener("click", (e) => {
-      if (!desktopPopup.contains(e.target) && !desktopToggle.contains(e.target)) {
+      if (
+        !desktopPopup.contains(e.target) &&
+        !desktopToggle.contains(e.target)
+      ) {
         desktopPopup.classList.add("hidden");
         desktopPopup.classList.remove("flex");
       }
@@ -43,7 +46,9 @@ export function initSearchPopup() {
   }
 
   if (desktopInput && desktopResults) {
-    desktopInput.addEventListener("input", (e) => handleSearch(e, desktopResults));
+    desktopInput.addEventListener("input", (e) =>
+      handleSearch(e, desktopResults),
+    );
   }
 
   // --- MOBIL SEARCH LOGIKK ---
@@ -61,7 +66,11 @@ export function initSearchPopup() {
 
     document.addEventListener("click", (e) => {
       const modal = document.getElementById("search-modal");
-      if (modal && !modal.contains(e.target) && !e.target.closest("#open-mobile-search")) {
+      if (
+        modal &&
+        !modal.contains(e.target) &&
+        !e.target.closest("#open-mobile-search")
+      ) {
         mobileOverlay.classList.add("hidden");
       }
     });
@@ -89,16 +98,19 @@ async function handleSearch(e, container) {
   }
 
   try {
-    const response = await fetch(`https://v2.api.noroff.dev/auction/listings?title=${query}`, {
-      headers: {
-        "Content-Type": "application/json",
-        "X-Noroff-API-Key": "9fe13230-12f3-4f0d-83c3-5703f9ff0bf6",
+    const response = await fetch(
+      `https://v2.api.noroff.dev/auction/listings?title=${query}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "X-Noroff-API-Key": "9fe13230-12f3-4f0d-83c3-5703f9ff0bf6",
+        },
       },
-    });
+    );
 
     const { data } = await response.json();
     const filtered = data.filter((listing) =>
-      listing.title.toLowerCase().includes(query.toLowerCase())
+      listing.title.toLowerCase().includes(query.toLowerCase()),
     );
 
     displaySearchResults(filtered.slice(0, 5), container);

@@ -37,12 +37,12 @@ function handleLoginForm() {
     if (hasError) return;
 
     try {
-      const data = await loginUser(email, password);  
+      const data = await loginUser(email, password);
       const token = localStorage.getItem("accessToken");
 
       if (token) {
-        const userCredits = data.credits || 0; 
-        window.location.href = "./html/feed.html"; 
+        const userCredits = data.credits || 0;
+        window.location.href = "./html/feed.html";
       } else {
         alert("Login failed: No token found.");
       }

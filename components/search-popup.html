@@ -1,11 +1,15 @@
 <div
   id="search-popup"
-  class="hidden absolute top-[60px] left-[70%] transform -translate-x-1/2 z-50">
-  <div class="bg-white p-6 rounded-lg shadow-md max-w-sm w-full relative border border-gray-200">
+  class="hidden absolute top-[60px] left-[70%] transform -translate-x-1/2 z-50"
+>
+  <div
+    class="bg-white p-6 rounded-lg shadow-md max-w-sm w-full relative border border-gray-200"
+  >
     <button
       id="close-search-popup"
       class="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
-      aria-label="Close search popup">
+      aria-label="Close search popup"
+    >
       &times;
     </button>
     <div class="flex items-center border rounded px-3 py-2 mb-4">
@@ -13,18 +17,21 @@
         class="h-5 w-5 text-gray-400 mr-2"
         fill="none"
         stroke="currentColor"
-        viewBox="0 0 24 24">
+        viewBox="0 0 24 24"
+      >
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
           stroke-width="2"
-          d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"/>
+          d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"
+        />
       </svg>
       <input
         type="text"
         placeholder="Search listings..."
         class="w-full focus:outline-none"
-        id="search-input"/>
+        id="search-input"
+      />
     </div>
     <ul id="search-results" class="space-y-2"></ul>
   </div>

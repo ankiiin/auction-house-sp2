@@ -2,7 +2,7 @@ import { createListing } from "./script.js";
 
 /**
  * Initializes the create listing form when the DOM is ready.
- * 
+ *
  * @function document.addEventListener
  */
 document.addEventListener("DOMContentLoaded", () => {
@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /**
    * Handles the form submission to create a new listing.
-   * 
+   *
    * @param {Event} event - The form submission event.
    * @async
    * @function form.submit
@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const url = new URL(mediaUrl);
         media.push({
           url: url.href,
-          alt: title || "Auction image"
+          alt: title || "Auction image",
         });
       } catch {
         alert("Please enter a valid image URL.");

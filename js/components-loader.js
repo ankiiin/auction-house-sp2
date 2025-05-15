@@ -162,7 +162,6 @@ export async function loadMobileSearchModal() {
     import("./search.js").then((module) => {
       module.initSearchPopup();
     });
-
   } catch (error) {
     console.error("Failed to load mobile search modal:", error);
   }
