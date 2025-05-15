@@ -141,6 +141,7 @@ function openBidModal(listingId, currentBid) {
       bidErrorMessage.classList.add("hidden");
       await placeBid(listingId, bidAmount);
       updateUserCredits(-bidAmount);
+      import("./utils.js").then(({ displayUserCredits }) => displayUserCredits());
       bidModal.classList.add("hidden");
     }
   };
