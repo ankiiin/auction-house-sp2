@@ -21,13 +21,14 @@ const headers = {
  * Registers a new user using the Noroff Auth API.
  * @async
  * @function registerUser
- * @param {string} name - The user's name
- * @param {string} email - The user's email (must end with @stud.noroff.no)
- * @param {string} password - The user's password (min. 8 characters)
+ * @param {Object} user - The user object containing name, email, and password
+ * @param {string} user.name - The user's name
+ * @param {string} user.email - The user's email (must end with @stud.noroff.no)
+ * @param {string} user.password - The user's password (min. 8 characters)
  * @returns {Promise<Object>} The registered user data or error object
  * @throws {Error} If registration fails or the API returns an error
  */
-export async function registerUser(name, email, password) {
+export async function registerUser({ name, email, password }) {
   try {
     const response = await fetch(REGISTER_URL, {
       method: "POST",
