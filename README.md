@@ -48,12 +48,33 @@ The project demonstrates skills in:
 
 ## Project Structure
 
-├── components/ → Shared components like navbar, footer, modals
-├── css/ → Tailwind output and global styles
-├── js/ → Modular JavaScript (API, auth, views, utils)
-├── html/ → Page-specific HTML views
-├── index.html → Login view
-└── README.md
+├── 📁 components/           # Reusable HTML components (navbar, footer, modals)
+├── 📁 css/                  # Compiled Tailwind CSS and base styles
+│   └── styles.css
+├── 📁 js/                   # Modular JavaScript files
+│   ├── auth.js             # Authentication logic
+│   ├── dashboard.js        # Dashboard view logic
+│   ├── edit-listing.js     # Edit listing functionality
+│   ├── feed.js             # Feed and bid logic
+│   ├── init.js             # Component loader and startup script
+│   ├── listing-details.js  # Individual listing detail page
+│   ├── login.js            # Login form logic
+│   ├── register.js         # Registration logic
+│   ├── script.js           # API communication & utilities
+│   ├── search.js           # Desktop & mobile search functionality
+│   └── utils.js            # Debounce, credit display, etc.
+├── 📁 html/                 # HTML views for the app
+│   ├── dashboard.html
+│   ├── create-listing.html
+│   ├── edit-listing.html
+│   ├── feed.html
+│   ├── listing-details.html
+│   └── register.html
+├── index.html              # Login page (entry point)
+├── tailwind.config.js      # Tailwind configuration
+├── postcss.config.js       # PostCSS setup
+├── package.json            # Project dependencies
+└── README.md               # Project documentation
 ---
 ## Additional Notes
 
