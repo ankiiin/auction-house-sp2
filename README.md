@@ -48,12 +48,16 @@ The project demonstrates skills in:
 
 ## Project Structure
 
+├── components/          → Shared components like navbar, footer, modals
+├── css/                 → Tailwind output and global styles
+├── js/                  → Modular JavaScript (API, auth, views, utils)
+├── html/                → Page-specific HTML views
+├── index.html           → Login view
+└── README.md
 ---
-
-## How to Run Tailwind
-
-To compile Tailwind CSS and watch for changes:
-
-```bash
-npx tailwindcss -i ./input.css -o ./css/styles.css --watch
-```
+## Additional Notes
+	•	All API communication is handled with built-in fetch and organized into reusable methods
+	•	Infinite scroll loads listings dynamically for a modern UX
+	•	Forms are validated for accessibility and usability
+	•	JSDoc is used throughout for clear developer documentation
+	•	Final testing was completed across devices and browsers
