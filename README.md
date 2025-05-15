@@ -56,8 +56,9 @@ The project demonstrates skills in:
 └── README.md
 ---
 ## Additional Notes
-	•	All API communication is handled with built-in fetch and organized into reusable methods
-	•	Infinite scroll loads listings dynamically for a modern UX
-	•	Forms are validated for accessibility and usability
-	•	JSDoc is used throughout for clear developer documentation
-	•	Final testing was completed across devices and browsers
+
+- All API communication is handled with built-in fetch and organized into reusable methods
+- Infinite scroll loads listings dynamically for a modern UX
+- Forms are validated for accessibility and usability
+- JSDoc is used throughout for clear developer documentation
+- Final testing was completed across devices and browsers
