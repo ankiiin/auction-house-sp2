@@ -3,6 +3,8 @@ import { loadListings, getHighestBid, updateUserCredits } from "./script.js";
 let currentPage = 1;
 let isLoading = false;
 
+const isLoggedIn = !!localStorage.getItem("accessToken");
+
 /**
  * Loads and renders a page of active listings.
  * Filters out expired and own listings. Appends them to the DOM.
@@ -10,7 +12,7 @@ let isLoading = false;
  */
 async function loadAndRenderListings() {
   isLoading = true;
-  const { listings } = await loadListings(currentPage, 36);
+  const { listings } = await loadListings(currentPage, 12);
   currentPage++;
 
   const now = new Date();
@@ -56,7 +58,7 @@ async function loadAndRenderListings() {
       <p class="text-sm text-gray-500 mb-4">${timeLeft}</p>
       <div class="flex flex-col justify-between items-center">
         <button class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 mb-2" id="bid-btn-${listing.id}">BID</button>
-        <a href="listing-details.html?id=${listing.id}" class="text-indigo-500 py-2 px-4 rounded-md border-2 border-indigo-500">VIEW LISTING</a>
+        <a href="../html/listing-details.html?id=${listing.id}" class="text-indigo-500 py-2 px-4 rounded-md border-2 border-indigo-500">VIEW LISTING</a>
       </div>
     `;
 
@@ -64,6 +66,11 @@ async function loadAndRenderListings() {
 
     const bidButton = document.getElementById(`bid-btn-${listing.id}`);
     bidButton.addEventListener("click", () => {
+      if (!isLoggedIn) {
+        window.location.href = "../html/login.html";
+        return;
+      }
+    
       openBidModal(listing.id, highestBid);
     });
 

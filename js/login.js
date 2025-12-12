@@ -41,7 +41,7 @@ function handleLoginForm() {
 
       if (token) {
         const userCredits = data.credits || 0;
-        window.location.href = "./html/feed.html";
+        window.location.href = "../index.html";
       } else {
         alert("Login failed: No token found.");
       }
